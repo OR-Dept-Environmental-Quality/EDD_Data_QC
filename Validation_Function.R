@@ -3,7 +3,7 @@
 #output an excel sheet that contains validation results
 
 
-RPA_Validate<-function(x) {
+
   #x is dataset
   #checks to run
   
@@ -52,6 +52,6 @@ RPA_Validate<-function(x) {
     sub<-sub[order(sub$Method_Code),]
   }
   
-}
 
-x<-NPDES_AWQMS_Qry(startdate = "2000-01-01", enddate = "2019-01-01" , org = "GP-WM", HUC8 = NULL, HUC8_Name = NULL,reject=FALSE)
+
+#x<-NPDES_AWQMS_Qry(startdate = "2000-01-01", enddate = "2019-01-01" , org = "GP-WM", HUC8 = NULL, HUC8_Name = NULL,reject=FALSE)
