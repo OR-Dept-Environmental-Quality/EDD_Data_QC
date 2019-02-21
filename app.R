@@ -26,7 +26,7 @@ source("Validation_Function.R")
 
 
 # Query out the valid values ---------------------------------------------
-#only need date, org, and whether rejected or not for query
+#only need date, org,station, and whether rejected or not for query
 
 
 # Check to see if saved cache of data exists. If it does not, or is greater than
@@ -83,7 +83,14 @@ ui <- fluidPage(
        selectizeInput("orgs",
                        "Select organization",
                        choices = organization,
-                       multiple = TRUE),
+                      multiple = TRUE),
+                     
+       # Monitoring locations 
+       selectizeInput("monlocs",
+                      "Select Monitoring Locations",
+                      choices = station,
+                      multiple = TRUE), 
+      
        #Reject button
        checkboxInput("Reject",
                      label = "Keep Rejected data",
@@ -135,7 +142,7 @@ server <- function(input, output) {
    rrej<-if(input$Reject) {TRUE} else {FALSE} 
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),reject=rrej)
+   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),station=c(input$monlocs),reject=rrej)
    
    })
    
@@ -189,13 +196,15 @@ server <- function(input, output) {
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
-  filename = function() {paste("AWQMS_Download-", Sys.Date(),"_",input$permit_num,".xlsx", sep="")},
+  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permit_num,".xlsx", sep="")},
   content = function(file) {
     #sheet with data
     write.xlsx(dsub(), file,sheetName="Data",row.names = FALSE,showNA=FALSE,append=TRUE)
     #sheet with QL issues
     #sheet with issues between total and dissolved
+    write.xlsx(metchk(), file,sheetName="Total_vs_Dissolved",row.names = FALSE,showNA=FALSE,append=TRUE)
     #sheet with methods used
+    write.xlsx(dtchk(), file,sheetName="Methods_Used",row.names = FALSE,showNA=FALSE,append=TRUE)
 
     })
 

@@ -8,12 +8,17 @@
   #checks to run
   
   #1. QL checks
- # ql<-
+  ql<-function(x){
+    #subset just parameter, cas, and MDL, MRL, and units
+    x<-subset(x,select=c("Char_Name","Sample_Fraction","CASNumber","MDLValue","MDLUnit","MRLValue","MRLUnit"))
+   # qls<-
+    
+  }
   
   #2. Dissolved vs Total/Total Recoverable
   dvst<-function(x){
     y<-subset(x,x$Sample_Fraction %in% c("Total Recoverable","Dissolved","Total"),
-              select=c("Char_Name","Sample_Fraction","Result_Numeric","SampleStartDate",
+              select=c("Char_Name","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","SampleStartDate",
                        "SampleStartTime","OrganizationID","MLocID","Project1","act_id"))
     
     #create new identifier out of activity id and characteristic name
@@ -35,10 +40,11 @@
     #calculate the difference
     new$diff<-new$total-new$dissolved
     
-    issues<-subset(new,new$diff<0)
+    #if difference is negative, and if it is larger than the MDL, then it is an issue
+    issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDLValue)
     cont<-merge(issues,y, by="comb")
     
-    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","diff","SampleStartDate",
+    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","SampleStartDate",
                                 "SampleStartTime","OrganizationID","MLocID","Project1"))
     
     return(final)
