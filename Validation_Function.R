@@ -1,4 +1,4 @@
-## code to validate NPDES data
+# code to validate NPDES data
 #check data in AWQMS through data pull function
 #output an excel sheet that contains validation results
 
