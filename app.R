@@ -8,8 +8,7 @@ print("Initial data queries may take a few minutes.")
 library(shiny)
 library(AWQMSdata)
 library(dplyr)
-library(xlsx)
-library(xlsxjars)
+library(openxlsx)
 library(shinybusy)
 
 #attempt to turn off scientific notation
@@ -61,8 +60,8 @@ ui <- fluidPage(
         textInput("permittee",
                   label="Permittee Name"),
         #permit #
-        textInput("permit_num",
-                  label="Permit Number"),
+        textInput("data_sub",
+                  label="Data Submission"),
         # Add line
         tags$hr(),
         #Add break
@@ -172,6 +171,15 @@ server <- function(input, output) {
     tsub()
    })
    
+   #do QL checks
+   qlchk<-eventReactive(input$goButton,{
+     ql(data())
+     })
+                        
+   #QL checks for shiny app view
+   output$ql<-renderDataTable({
+     qlchk()
+   })
    #run dissolved vs total checks
    dtchk<-eventReactive(input$goButton,{
      dvst(data())
@@ -191,20 +199,34 @@ server <- function(input, output) {
    output$methods<-renderDataTable({
      metchk()
    })
+
+#create workbook
+   dwnld<-eventReactive(input$goButton,{
+     wb<-createWorkbook()
+     #add data
+     addWorksheet(wb,"Data")
+     writeDataTable(wb,sheet="Data",x=dsub(),tableStyle="none")
+     #add ql checks
+     addWorksheet(wb,"QL_Check")
+     writeDataTable(wb,sheet="QL_Check",x=qlchk(),tableStyle="none")
+     #add diff checks
+     addWorksheet(wb,"Diff_Check")
+     writeDataTable(wb,sheet="Diff_Check",x=dtchk(),tableStyle="none")
+     #method list
+     addWorksheet(wb,"Method_Check")
+     writeDataTable(wb,sheet="Method_Check",x=metchk(),tableStyle="none")
+     
+     wb
+   })
+
 # Download button- only works in Chrome
 #gives an excel with two sheets, the first is the serach parameters (needs some work), the second is the data
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
-  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permit_num,".xlsx", sep="")},
+  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permitee,"_",input$data_sub,".xlsx", sep="")},
   content = function(file) {
-    #sheet with data
-    write.xlsx(dsub(), file,sheetName="Data",row.names = FALSE,showNA=FALSE,append=TRUE)
-    #sheet with QL issues
-    #sheet with issues between total and dissolved
-    write.xlsx(metchk(), file,sheetName="Total_vs_Dissolved",row.names = FALSE,showNA=FALSE,append=TRUE)
-    #sheet with methods used
-    write.xlsx(dtchk(), file,sheetName="Methods_Used",row.names = FALSE,showNA=FALSE,append=TRUE)
+    saveWorkbook(dwnld(),file)
 
     })
 

@@ -2,16 +2,50 @@
 #check data in AWQMS through data pull function
 #output an excel sheet that contains validation results
 
-
+#having issues with factors, convert to numeric
+#function to do so
+as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
 
   #x is dataset
   #checks to run
-  
+
   #1. QL checks
   ql<-function(x){
-    #subset just parameter, cas, and MDL, MRL, and units
-    x<-subset(x,select=c("Char_Name","Sample_Fraction","CASNumber","MDLValue","MDLUnit","MRLValue","MRLUnit"))
-   # qls<-
+    require(openxlsx)
+    require(dplyr)
+    source("//deqlab1/abrits/Permit Job/R_Scripts/ShinyNPDES_AWQMS/NameandFraction.R")
+    #subset just parameter, cas, and MDL, MRL, and units, only take unique values
+    #x<-subset(x,select=c("Char_Name","Sample_Fraction","CASNumber","MDLValue","MDLUnit","MRLValue","MRLUnit"))
+    
+    #read in table with QLs
+    qls<-read.xlsx("2_21_19_QLs.xlsx",colNames=TRUE,na.string="NA")
+    
+    #need to do unit conversions to compare data and ql list, all need to be in ug/l, except for Alkalinity, which should be in mg/L
+    #checked AWQMS database, all alkalinity is reported in mg/l or mg/l CaCO3, no need for conversion
+    #get list of char names 
+    names<-unique(x$Char_Name)
+    #remove alkalinity, that needs to stay as mg/l
+    names<-names[names !="Alkalinity, total"]
+    
+    x<-unit_conv(x,names,"mg/l","ug/l")
+    x<-unit_conv(x,names,"ng/l","ug/l")
+    
+    #do a join of qls and x based on Char_Name (need to combine metals and fractions)
+    x<-namefrac(x)
+    
+    x<-left_join(x,qls,by="Char_Name")
+    
+    #throw warning if unit mismatch, else find the rows where MRL is greater than QL and return them
+    
+    if (any(!(is.na(x$QL_Unit)) & x$MDLUnit!=x$QL_Unit)) {return("Warning: Unit Mismatch")}
+    
+    else {x$issue<-ifelse(
+      x$MRLValue>x$QL & x$Result_Numeric<x$MRLValue,
+      "QL not met, Result below QL",
+      NA)
+    
+    return(subset(x,!(is.na(issue)),
+           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","issue")))}
     
   }
   
