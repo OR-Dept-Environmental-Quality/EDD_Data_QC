@@ -14,9 +14,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     require(openxlsx)
     require(dplyr)
     source("//deqlab1/abrits/Permit Job/R_Scripts/ShinyNPDES_AWQMS/NameandFraction.R")
-    #subset just parameter, cas, and MDL, MRL, and units, only take unique values
-    #x<-subset(x,select=c("Char_Name","Sample_Fraction","CASNumber","MDLValue","MDLUnit","MRLValue","MRLUnit"))
-    
+
     #read in table with QLs
     qls<-read.xlsx("2_21_19_QLs.xlsx",colNames=TRUE,na.string="NA")
     
@@ -45,20 +43,18 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
       NA)
     
     return(subset(x,!(is.na(issue)),
-           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","issue")))}
+           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","Result_Comment","issue")))}
     
   }
   
   #2. Dissolved vs Total/Total Recoverable
   dvst<-function(x){
-    y<-subset(x,x$Sample_Fraction %in% c("Total Recoverable","Dissolved","Total"),
-              select=c("Char_Name","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","SampleStartDate",
-                       "SampleStartTime","OrganizationID","MLocID","Project1","act_id"))
+    y<-subset(x,x$Sample_Fraction %in% c("Total Recoverable","Dissolved","Total"))
     
     #create new identifier out of activity id and characteristic name
     y$comb<-paste0(y$act_id,",",y$Char_Name)
     
-    #get unique identifies, put into new dataset
+    #get unique identifiers, put into new dataset
     new<-unique(subset(y,select=c("act_id","Char_Name","comb")))
     
     #select all dissolved
@@ -71,27 +67,77 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     new$dissolved<-dis$Result_Numeric[match(new$comb,dis$comb,nomatch=NA)]
     new$total<-tot$Result_Numeric[match(new$comb,tot$comb,nomatch=NA)]
     
+    #add MDL value (take lower value if one is lower than the other (makes for more conservative test))
+    new$totMDL<-tot$MDLValue[match(new$comb,tot$comb,nomatch=NA)]
+    new$disMDL<-dis$MDLValue[match(new$comb,dis$comb,nomatch=NA)]
+    new$MDL<-ifelse(new$totMDL<new$disMDL,new$totMDL,new$disMDL)
+    
     #calculate the difference
     new$diff<-new$total-new$dissolved
     
     #if difference is negative, and if it is larger than the MDL, then it is an issue
-    issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDLValue)
+    issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
     cont<-merge(issues,y, by="comb")
     
     final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","SampleStartDate",
-                                "SampleStartTime","OrganizationID","MLocID","Project1"))
+                                "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment"))
     
     return(final)
   }
   
   
   #3. Method Checks- get list of methods used and list of characteristics
+  #will want to significantly expand this to be able to check against the CFR
   mc<-function(x){
     #x is dataset
-    sub<-unique(subset(x,select=c(CASNumber,Char_Name,Method_Code,Method_Context)))
-    sub<-sub[order(sub$Method_Code),]
+    require(openxlsx)
+    require(dplyr)
+   
+    
+    #read in AWQMS-compatible CFR method list- NOTE THAT THIS LIST IS NOT EXHAUSTIVE YET-BULDING AS WE GO
+    cfr<-read.xlsx("3_13_2019_CFR_Methods.xlsx",colNames=TRUE,na.string="NA")
+    
+    #join datasets on characteristic name
+    x<-left_join(x,cfr,by=c("Char_Name","Method_Code","Method_Context"))
+    
+    
+    
+    
+    #note that EPA method 625 and 624 were valid CFR methods up until the 2017 revision of CFR 136, where they were replaced with 
+    #625.1 and 624.1, make sure this is noted in the code so we don't flag pre 2017 data as out of compliance when it was actually fine
+    x$CFR_Method<-ifelse(x$Method_Code %in% c("624","625","608") & x$SampleStartDate<"2017-09-27",
+                         paste0("Prior to 2017 CFR method change, Method is CFR approved"),
+                         x$CFR_Method)
+    
+    x$CFR_Method<-ifelse(x$Method_Code %in% c("624","625","608") & x$SampleStartDate>"2017-09-27",
+                         paste0("Method Changed 9/27/2017, update needed"),
+                         x$CFR_Method)
+    
+    #no methods for tributyl phosphate, salinity, Demeton (8065-48-3) in CFR 136
+    x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton"),
+                     paste0("No CFR method specified for characteristic"),
+                     x$CFR_Method)
+    
+    x$CFR_Method<-ifelse(is.na(x$CFR_Method),
+                         paste0("No"),
+                         x$CFR_Method)
+    
+    #return method results
+    sub<-subset(x, CFR_Method %in% c("No","Method Changed 9/27/2017, update needed"),
+                select=c(CASNumber.x,Char_Name,Method_Code,Method_Context,CFR_Method))
+    sub<-unique(sub)
+    
+    return(sub)
+  }
+  
+  rej<-function(x){
+    #x is dataset
+    sub<-subset(x,Result_status %in% c("Rejected"),
+                select=c(Org_Name,Project1,MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
+                         Sample_Fraction,CASNumber,Result,Result_Unit,Method_Code,Method_Context,MDLValue,MRLValue,
+                         Result_Comment,Result_status))
   }
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2000-01-01", enddate = "2019-01-01" , org = "GP-WM", HUC8 = NULL, HUC8_Name = NULL,reject=FALSE)
+#x<-NPDES_AWQMS_Qry(startdate = "2015-01-01", enddate = "2019-01-01" , org = "GP-WM", HUC8 = NULL, HUC8_Name = NULL,reject=TRUE)

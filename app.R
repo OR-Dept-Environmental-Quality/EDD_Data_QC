@@ -89,11 +89,6 @@ ui <- fluidPage(
                       "Select Monitoring Locations",
                       choices = station,
                       multiple = TRUE), 
-      
-       #Reject button
-       checkboxInput("Reject",
-                     label = "Keep Rejected data",
-                     value = FALSE),
        
        #add action button, idea is to not run query until the button is clicked)
        actionButton("goButton","Run Query"),
@@ -119,7 +114,8 @@ ui <- fluidPage(
         #Total vs dissolved
         tabPanel("Total vs Dissolved",dataTableOutput("diff")),
         #methods used
-        tabPanel("Methods",dataTableOutput("methods"))
+        tabPanel("Methods",dataTableOutput("methods")),
+        tabPanel("Rejected Data",dataTableOutput("rejected"))
         )
    )
 ),
@@ -138,10 +134,9 @@ server <- function(input, output) {
      
    rstdt<-toString(sprintf("%s",input$startd))
    rendd<-toString(sprintf("%s",input$endd))
-   rrej<-if(input$Reject) {TRUE} else {FALSE} 
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),station=c(input$monlocs),reject=rrej)
+   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),station=c(input$monlocs),reject=TRUE)
    
    })
    
@@ -199,6 +194,16 @@ server <- function(input, output) {
    output$methods<-renderDataTable({
      metchk()
    })
+   
+   #get rejected data
+   rejchk<-eventReactive(input$goButton,{
+     rej(data())
+   })
+   
+   #rejected view for shiny app
+   output$rejected<-renderDataTable({
+     rejchk()
+   })
 
 #create workbook
    dwnld<-eventReactive(input$goButton,{
@@ -220,7 +225,6 @@ server <- function(input, output) {
    })
 
 # Download button- only works in Chrome
-#gives an excel with two sheets, the first is the serach parameters (needs some work), the second is the data
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
