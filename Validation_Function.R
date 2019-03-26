@@ -43,7 +43,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
       NA)
     
     return(subset(x,!(is.na(issue)),
-           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","Result_Comment","issue")))}
+           select=c("Char_Name","CASNumber","act_id","SampleStartDate","SampleStartTime","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))}
     
   }
   
@@ -75,11 +75,14 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     #calculate the difference
     new$diff<-new$total-new$dissolved
     
+    #calculate the RPD
+    new$RPD<-((new$dissolved-new$total)/2)*100
+    
     #if difference is negative, and if it is larger than the MDL, then it is an issue
     issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
     cont<-merge(issues,y, by="comb")
     
-    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","SampleStartDate",
+    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
                                 "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment"))
     
     return(final)
@@ -119,12 +122,12 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
                      x$CFR_Method)
     
     x$CFR_Method<-ifelse(is.na(x$CFR_Method),
-                         paste0("No"),
+                         paste0("No, check CFR 136 for appropriate methods"),
                          x$CFR_Method)
     
     #return method results
-    sub<-subset(x, CFR_Method %in% c("No","Method Changed 9/27/2017, update needed"),
-                select=c(CASNumber.x,Char_Name,Method_Code,Method_Context,CFR_Method))
+    sub<-subset(x, CFR_Method %in% c("No, check CFR 136 for appropriate methods","Method Changed 9/27/2017, update needed"),
+                select=c(CASNumber.x,Char_Name,Method_Code,Method_Context,CFR_Method,SampleStartDate))
     sub<-unique(sub)
     
     return(sub)

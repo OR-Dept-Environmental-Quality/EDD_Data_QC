@@ -217,9 +217,12 @@ server <- function(input, output) {
      #add diff checks
      addWorksheet(wb,"Diff_Check")
      writeDataTable(wb,sheet="Diff_Check",x=dtchk(),tableStyle="none")
-     #method list
+     #method CFR check
      addWorksheet(wb,"Method_Check")
      writeDataTable(wb,sheet="Method_Check",x=metchk(),tableStyle="none")
+     #add rejected check
+     addWorksheet(wb,"Rejected_Data")
+     writeDataTable(wb,sheet="Rejected_Data",x=rejchk(),tableStyle="none")
      
      wb
    })
