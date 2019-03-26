@@ -3,6 +3,7 @@
 # the 'Run App' button above.
 ######This app is meant to help QC data submitted under EDD toxics by NPDES permittees
 
+
 print("Initial data queries may take a few minutes.")
 
 library(shiny)
@@ -238,8 +239,11 @@ output$downloadData <- downloadHandler(
     })
 
 }
+
 # Run the application
+
 shinyApp(ui = ui, server = server)
+
 
 #make sure you do runApp(launch.browser=TRUE) or in the Run App tab, click "Run External" if you want to download-
 #only works in Chrome
