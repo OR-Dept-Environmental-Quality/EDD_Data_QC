@@ -8,20 +8,16 @@ params:
 output: pdf_document
 ---
 
-#`r paste("EDD Toxics Report for",params$org)` {#anchor}
-##`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` {#css_id}
-## Aliana Britson {#css_id}
+#`r paste("EDD Toxics Report for",params$org)` 
+##`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` 
+## Aliana Britson 
 
 ```{r setup-packages-functions, include=FALSE}
 library(knitr)
+library(kableExtra)
 ```
 
-```{r echo=FALSE}
-#params object available in document
-params$org
-```
-
-### Quantitation Limits {.css_class}
+### Quantitation Limits 
 
 Table 1 includes a list of pollutants for which the provided Quantiation Limits are not sufficiently sensitive
 
@@ -29,7 +25,7 @@ Table 1 includes a list of pollutants for which the provided Quantiation Limits 
 kable(params$qls, caption="Table 1: Insufficient Quantitation Limits")
 ```
 
-### Methods {.css_class}
+### Methods 
 
 Table X inlcludes a list of pollutants that were not analyzed using CFR methods
 ``` {R echo=FALSE, results='asis'}
