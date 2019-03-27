@@ -11,6 +11,8 @@ library(AWQMSdata)
 library(dplyr)
 library(openxlsx)
 library(shinybusy)
+library(rmarkdown)
+library(tinytex)
 
 #attempt to turn off scientific notation
 options(scipen=999)
@@ -93,8 +95,10 @@ ui <- fluidPage(
        
        #add action button, idea is to not run query until the button is clicked)
        actionButton("goButton","Run Query"),
-       #add a download button
-       downloadButton('downloadData', 'Download Data')
+       #add an excel download button
+       downloadButton('downloadData', 'Download Data'),
+       #add Report download button
+       downloadButton('report','Download PDF Report')
         ),
 
 
@@ -232,11 +236,32 @@ server <- function(input, output) {
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
-  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permitee,"_",input$data_sub,".xlsx", sep="")},
+  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permittee,"_",input$data_sub,".xlsx", sep="")},
   content = function(file) {
     saveWorkbook(dwnld(),file)
 
     })
+
+#R markdown report
+output$report<-downloadHandler(
+  filename = function() {paste(input$permittee, Sys.Date() ,"_EDDToxics_Report.pdf", sep="")},
+  content=function(file){
+    
+    #create a file in a temporary directory
+    tempReport<-file.path(tempdir(),"EDDToxics_Rmarkdown.Rmd")
+    #copy our report to the temporary directory file
+    file.copy("EDDToxics_Rmarkdown.Rmd",tempReport,overwrite=TRUE)
+    
+    #set up parameters to pass to our Rmd document
+    params<-list(n=input$orgs)
+      
+    rmarkdown::render(tempReport, output_file=file,
+                      params=params,
+                      envir=new.env(parent= globalenv())
+                      
+   )
+  }
+)
 
 }
 
