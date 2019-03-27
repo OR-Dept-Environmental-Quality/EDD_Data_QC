@@ -1,18 +1,38 @@
 ---
-title: "EDDToxicsReport"
-author: "Aliana Britson"
 params:
-  n: NA
+  org: NA
+  startdate: NA
+  enddate: NA
+  qls: NA
+  methods: NA
 output: pdf_document
 ---
-knitr::opts_chunk$set(echo = FALSE)
 
-```{r}
-#params object available in document
-params$n
+#`r paste("EDD Toxics Report for",params$org)` {#anchor}
+##`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` {#css_id}
+## Aliana Britson {#css_id}
+
+```{r setup-packages-functions, include=FALSE}
+library(knitr)
 ```
 
-View Table
-#```{r}
-#n
-#```
+```{r echo=FALSE}
+#params object available in document
+params$org
+```
+
+### Quantitation Limits {.css_class}
+
+Table 1 includes a list of pollutants for which the provided Quantiation Limits are not sufficiently sensitive
+
+``` {r echo=FALSE, results='asis'}
+kable(params$qls, caption="Table 1: Insufficient Quantitation Limits")
+```
+
+### Methods {.css_class}
+
+Table X inlcludes a list of pollutants that were not analyzed using CFR methods
+``` {R echo=FALSE, results='asis'}
+kable(params$methods, caption="Table 2: Pollutants analyzed using non-CFR methods")
+```
+

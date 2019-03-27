@@ -12,7 +12,6 @@ library(dplyr)
 library(openxlsx)
 library(shinybusy)
 library(rmarkdown)
-library(tinytex)
 
 #attempt to turn off scientific notation
 options(scipen=999)
@@ -253,7 +252,11 @@ output$report<-downloadHandler(
     file.copy("EDDToxics_Rmarkdown.Rmd",tempReport,overwrite=TRUE)
     
     #set up parameters to pass to our Rmd document
-    params<-list(n=input$orgs)
+    params<-list(org=unique(data()$Org_Name),
+                 startdate=input$startd,
+                 enddate=input$endd,
+                 qls=qlchk(),
+                 methods=metchk())
       
     rmarkdown::render(tempReport, output_file=file,
                       params=params,
