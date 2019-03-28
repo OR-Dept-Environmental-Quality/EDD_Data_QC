@@ -26,6 +26,7 @@ source("E:/Permit Job/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
 source("Validation_Function.R")
 
 
+
 # Query out the valid values ---------------------------------------------
 #only need date, org,station, and whether rejected or not for query
 
@@ -251,12 +252,16 @@ output$report<-downloadHandler(
     #copy our report to the temporary directory file
     file.copy("EDDToxics_Rmarkdown.Rmd",tempReport,overwrite=TRUE)
     
+    #create list of characteristics
     #set up parameters to pass to our Rmd document
     params<-list(org=unique(data()$Org_Name),
                  startdate=input$startd,
                  enddate=input$endd,
                  qls=qlchk(),
-                 methods=metchk())
+                 methods=metchk(),
+                 diff=dtchk(),
+                 reject=rejchk(),
+                 data=data())
       
     rmarkdown::render(tempReport, output_file=file,
                       params=params,

@@ -5,6 +5,9 @@ params:
   enddate: NA
   qls: NA
   methods: NA
+  diff: NA
+  reject: NA
+  data: NA
 output: pdf_document
 ---
 
@@ -16,19 +19,53 @@ output: pdf_document
 library(knitr)
 library(kableExtra)
 ```
+### Pollutants Analyzed
+Table 1 contains a list of pollutants analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
+``` {r echo=FALSE}
+dat<-namefrac(params$data)
+names<-unique(dat$Char_Name, dat$SampleStartDate)
+
+
+kable(names, caption="List of Analyzed Pollutants") %>%
+  kable_styling(latex_option="hold_position")
+
+```
+
 
 ### Quantitation Limits 
+A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2015 by DEQ LEAD. 
 
-Table 1 includes a list of pollutants for which the provided Quantiation Limits are not sufficiently sensitive
+Table 2 includes a list of pollutants for which the provided QLs are not sufficiently sensitive. This table uses the current established QLs from DEQ LEAD that were updated in 2015. In some cases, permitees have the option of providing matrix or sample specific QLs, please see the individual permit for any permittee-specific QLs. 
 
-``` {r echo=FALSE, results='asis'}
-kable(params$qls, caption="Table 1: Insufficient Quantitation Limits")
+``` {r echo=FALSE}
+kable(params$qls, caption="Insufficient Quantitation Limits") %>%
+  kable_styling(latex_option="hold_position")
 ```
 
 ### Methods 
+ Permittees are required to use methods approved under 40 CFR 136. There are some pollutants that have no approved methods under 40 CFR 136. In some cases, permittees may obtain approval to perform different methods for specific pollutants through EPA. These instances are permittee-specific and should be contained within the permit. Please see the individual permit. 
 
-Table X inlcludes a list of pollutants that were not analyzed using CFR methods
-``` {R echo=FALSE, results='asis'}
-kable(params$methods, caption="Table 2: Pollutants analyzed using non-CFR methods")
+Table 3 inlcludes a list of pollutants that were not analyzed using CFR methods
+``` {r echo=FALSE}
+kable(params$methods, caption="Pollutants analyzed using non-CFR methods") %>%
+  kable_styling(latex_option="hold_position")
 ```
 
+### Total Recoverable vs Dissolved
+In the analysis of metals, the dissolved fraction of the pollutant should be less than the total recoverable fraction of the pollutant. However, there are some cases where sample contamination from an outside source or method uncertainty causes the dissolved fraction to be larger than the total recoverable fraction. Table 4 contains metals analysis where the dissolved fraction was larger than the total recoverable fraction. 
+``` {r echo=FALSE}
+kable(params$diff, caption="Metals with dissolved fraction larger than total recoverable fraction") %>%
+  kable_styling(latex_option="hold_position")
+```
+
+### Rejected Data
+In some cases, data does not pass quality control analysis. 
+
+Table 5 contains data that did not pass quality control checks. This data may still be usable for permitting purposes, but must be used with caution.
+
+``` {r echo=FALSE}
+kable(params$reject, caption="Rejected Data") %>%
+  kable_styling(latex_option="hold_position")
+```
+ 
+ 
