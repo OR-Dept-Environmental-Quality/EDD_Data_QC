@@ -135,10 +135,10 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
   rej<-function(x){
     #x is dataset
+    x<-namefrac(x)
     sub<-subset(x,Result_status %in% c("Rejected"),
-                select=c(Org_Name,Project1,MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
-                         Sample_Fraction,CASNumber,Result,Result_Unit,Method_Code,Method_Context,MDLValue,MRLValue,
-                         Result_Comment,Result_status))
+                select=c(MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
+                         CASNumber,Result,Result_Unit,Method_Code,Result_Comment,Result_status))
   }
   
 
