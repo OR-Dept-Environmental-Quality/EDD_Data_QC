@@ -43,7 +43,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
       NA)
     
     return(subset(x,!(is.na(issue)),
-           select=c("Char_Name","CASNumber","act_id","SampleStartDate","SampleStartTime","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))}
+           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))}
     
   }
   
