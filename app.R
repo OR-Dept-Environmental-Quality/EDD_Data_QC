@@ -13,6 +13,8 @@ library(openxlsx)
 library(shinybusy)
 library(rmarkdown)
 
+
+
 #attempt to turn off scientific notation
 options(scipen=999)
 
@@ -61,7 +63,7 @@ ui <- fluidPage(
       sidebarPanel(
         #permittee name
         textInput("permittee",
-                  label="Permittee Name"),
+                  label="Permit Number"),
         #permit #
         textInput("data_sub",
                   label="Data Submission"),
@@ -114,13 +116,22 @@ ui <- fluidPage(
         tabsetPanel(
           #all data
           tabPanel("Data",dataTableOutput("table")),
-        #quantitation limit issues
-        tabPanel("Quantitation Limit Issues",dataTableOutput("ql")),
-        #Total vs dissolved
-        tabPanel("Total vs Dissolved",dataTableOutput("diff")),
-        #methods used
-        tabPanel("Methods",dataTableOutput("methods")),
-        tabPanel("Rejected Data",dataTableOutput("rejected"))
+          #quantitation limit issues
+          tabPanel("Quantitation Limit Issues",
+                   dataTableOutput("ql"),
+                   textInput("comm1","Comments")),
+          #Total vs dissolved
+          tabPanel("Total vs Dissolved",
+                   dataTableOutput("diff"),
+                   textInput("comm2","Comments")),
+          #CFR issues
+          tabPanel("Methods",
+                   dataTableOutput("methods"),
+                   textInput("comm3","Comments")),
+          #rejected data
+          tabPanel("Rejected Data",
+                   dataTableOutput("rejected"),
+                   textInput("comm4","Comments"))
         )
    )
 ),
@@ -236,7 +247,7 @@ server <- function(input, output) {
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
-  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permittee,"_",input$data_sub,".xlsx", sep="")},
+  filename = function() {paste(input$permittee,"_EDD_Data_Check_",Sys.Date(),"_",input$data_sub,".xlsx", sep="")},
   content = function(file) {
     saveWorkbook(dwnld(),file)
 
@@ -261,10 +272,15 @@ output$report<-downloadHandler(
                  methods=metchk(),
                  diff=dtchk(),
                  reject=rejchk(),
-                 data=data())
+                 data=data(),
+                 qlcom=input$comm1,
+                 mcom=input$comm2,
+                 dfcom=input$comm3,
+                 rejcom=input$comm4)
       
     rmarkdown::render(tempReport, output_file=file,
                       params=params,
+                      clean=TRUE,
                       envir=new.env(parent= globalenv())
                       
    )
