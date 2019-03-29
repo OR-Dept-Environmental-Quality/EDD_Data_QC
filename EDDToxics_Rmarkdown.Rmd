@@ -16,10 +16,12 @@ output: pdf_document
 header-includes:
   \usepackage{booktabs}
   \usepackage{float}
+  \usepackage{longtable}
+  \usepackage{array}
 ---
 
 #`r paste("EDD Toxics Report for: ",params$org)` 
-##`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` 
+#`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` 
 ## Report by: Aliana Britson 
 
 ```{r setup-packages-functions, include=FALSE}
@@ -31,32 +33,34 @@ library(kableExtra)
 library(tinytex)
 
 ```
-### Pollutants Analyzed
+## Pollutants Analyzed
 Table 1 contains a list of pollutants analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
 ``` {r echo=FALSE}
 #get the unique names of the pollutants
 dat<-namefrac(params$data)
-names<-count(dat,Char_Name)
+chars<-count(dat, Char_Name, CASNumber)
 #sort them alphabetially
-names<-sort(names$Char_Name)
+chars<-chars[order(chars$Char_Name),]
 
+
+names(chars)<-c("Pollutant","CAS Number","Observations")
 #will likely need to split into a few tables, a list is overwhelming if permittee does full suite of volatiles and semi-volatiles
 
-kable(names, format='latex', caption="List of Analyzed Pollutants", booktabs=TRUE) %>%
+kable(chars, format='latex', caption="List of Analyzed Pollutants", booktabs=TRUE,longtable=TRUE) %>%
  kable_styling(latex_option="HOLD_position")
 ```
 
 
-### Quantitation Limits 
+## Quantitation Limits 
 A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2015 by DEQ LEAD. 
 
 Table 2 includes a list of pollutants for which the provided QLs are not sufficiently sensitive. This table uses the current established QLs from DEQ LEAD that were updated in 2015. In some cases, permitees have the option of providing matrix or sample specific QLs, please see the individual permit for any permittee-specific QLs. 
 
 ``` {r echo=FALSE}
 qlc<-params$qls
-qlc<-subset(qlc,select=c("Char_Name","CASNumber","act_id","Result","MRLValue","MRLUnit","QL","QL_Unit","Result_Comment"))
+qlc<-subset(qlc,select=c("Char_Name","act_id","Result","MRLValue","MRLUnit","QL","QL_Unit"))
 #rename columns
-names(qlc)<-c("Pollutant","CAS Number","Activity ID","Result","Submitted QL","Unit","Established QL","Unit","Result Comment")
+names(qlc)<-c("Pollutant","Activity ID","Result","Submitted QL","Unit","Established QL","Unit")
 
 kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE) %>%
   kable_styling(latex_options=c("HOLD_position","scale_down"))
@@ -66,37 +70,58 @@ kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=T
 
  **Water Quality Data Steward Comments:** `r params$qlcom`
 
-### Methods 
+## Methods 
  Permittees are required to use methods approved under 40 CFR 136. There are some pollutants that have no approved methods under 40 CFR 136. In some cases, permittees may obtain approval to perform different methods for specific pollutants through EPA. These instances are permittee-specific and should be contained within the permit. Please see the individual permit. 
 
 Table 3 inlcludes a list of pollutants that were not analyzed using CFR methods
 ``` {r echo=FALSE}
-kable(params$methods, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE) %>%
-  kable_styling(latex_option="HOLD_position","scale_down")
+methd<-namefrac(params$methods)
+
+#shorten the long agency names
+methd<-methd %>%
+       mutate(Method_Context=str_replace(Method_Context,"U.S. Environmental Protection Agency","US EPA")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"Georgia-Pacific Consumer Operations LLC",
+                                         "Georgia-Pacific"))
+
+#sort by pollutant
+methd<-methd[order(methd$Char_Name),]
+
+names(methd)<-c("Pollutant","Method","Agency","Method Status")
+kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position"))
 ```
 
 
 **Water Quality Data Steward Comments:** `r params$mcom`
 
 
-### Total Recoverable vs Dissolved
+## Total Recoverable vs Dissolved
 In the analysis of metals, the dissolved fraction of the pollutant should be less than the total recoverable fraction of the pollutant. However, there are some cases where sample contamination from an outside source or method uncertainty causes the dissolved fraction to be larger than the total recoverable fraction. Table 4 contains metals analysis where the dissolved fraction was larger than the total recoverable fraction. 
 ``` {r echo=FALSE}
-kable(params$diff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE) %>%
-  kable_styling(latex_option="HOLD_position","scale_down")
+dff<-params$diff
+colnames(dff)[2]<-"Char_Name"
+dff<-namefrac(dff)
+dff<-subset(dff,select=c(act_id.x,Char_Name,Result_Numeric,Result_Unit,diff,RPD))
+names(dff)<-c("Activty ID", "Pollutant", "Result","Unit", "Difference","RPD")
+kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE) %>%
+  kable_styling(latex_options=c("HOLD_position","scale_down"))
 ```
 
 
 **Water Quality Data Steward Comments:** `r params$dfcom`
 
-### Rejected Data
+## Rejected Data
 In some cases, data does not pass quality control analysis. 
 
 Table 5 contains data that did not pass quality control checks. This data may still be usable for permitting purposes, but must be used with caution.
 
 ``` {r echo=FALSE}
-kable(params$reject,format='latex', caption="Rejected Data",booktabs=TRUE, row.names=FALSE) %>%
-  kable_styling(latex_option="HOLD_position","scale_down")
+rej<-params$reject
+rej<-subset(rej,select=c(act_id, Char_Name, Result, Result_Unit, Result_Comment))
+names(rej)<-c("Activity ID","Pollutant","Result","Result_Unit","Result_Comment")
+kable(rej,format='latex', caption="Rejected Data",booktabs=TRUE, row.names=FALSE) %>%
+  kable_styling(latex_options=c("HOLD_position","scale_down")) %>%
+  column_spec(5,"10cm")
 ```
 
 
