@@ -275,8 +275,8 @@ output$report<-downloadHandler(
                  reject=rejchk(),
                  data=data(),
                  qlcom=input$comm1,
-                 mcom=input$comm2,
-                 dfcom=input$comm3,
+                 dfcom=input$comm2,
+                 mcom=input$comm3,
                  rejcom=input$comm4)
       
     rmarkdown::render(tempReport, output_file=file,
