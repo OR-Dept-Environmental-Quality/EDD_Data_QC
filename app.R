@@ -108,19 +108,19 @@ ui <- fluidPage(
           #quantitation limit issues
           tabPanel("Quantitation Limit Issues",
                    dataTableOutput("ql"),
-                   textInput("comm1","Comments")),
+                   textAreaInput("comm1","Comments",width='1000px',height='400px')),
           #Total vs dissolved
           tabPanel("Total vs Dissolved",
                    dataTableOutput("diff"),
-                   textInput("comm2","Comments")),
+                   textAreaInput("comm2","Comments",width='1000px',height='400px')),
           #CFR issues
           tabPanel("Methods",
                    dataTableOutput("methods"),
-                   textInput("comm3","Comments")),
+                   textAreaInput("comm3","Comments",width='1000px',height='400px')),
           #rejected data
           tabPanel("Rejected Data",
                    dataTableOutput("rejected"),
-                   textInput("comm4","Comments"))
+                   textAreaInput("comm4","Comments",width='1000px',height='400px'))
         )
    )
 ),

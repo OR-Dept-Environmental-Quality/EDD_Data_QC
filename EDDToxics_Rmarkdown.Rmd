@@ -54,7 +54,7 @@ kable(chars, format='latex', caption="List of Analyzed Pollutants", booktabs=TRU
 ## Quantitation Limits 
 A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2015 by DEQ LEAD. 
 
-Table 2 includes a list of pollutants for which the provided QLs are not sufficiently sensitive. This table uses the current established QLs from DEQ LEAD that were updated in 2015. In some cases, permitees have the option of providing matrix or sample specific QLs, please see the individual permit for any permittee-specific QLs. 
+The following table includes a list of pollutants for which the provided QLs are not sufficiently sensitive. This table uses the current established QLs from DEQ LEAD that were updated in 2015. In some cases, permitees have the option of providing matrix or sample specific QLs, please see the individual permit for any permittee-specific QLs. 
 
 ``` {r echo=FALSE, results='asis'}
 qlc<-params$qls
