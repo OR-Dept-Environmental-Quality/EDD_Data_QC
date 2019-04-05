@@ -38,18 +38,12 @@ source("Validation_Function.R")
 # 7 days old, query out stations and organizations and save the cache
 if(!file.exists("query_cache.RData") | 
    difftime(Sys.Date() ,file.mtime("query_cache.RData") , units = c("days")) > 7){
-  
-
-#NPDES_AWQMS_Stations functions only pulls stations 
-station <- NPDES_AWQMS_Stations()
-station <- station$MLocID
-station <- sort(station)
 
 organization <- AWQMS_Orgs()
 organization <- organization$OrganizationID
 organization <- sort(organization)
 
-save(station, organization, file = 'query_cache.RData')
+save(organization, file = 'query_cache.RData')
 } else {
   load("query_cache.RData")
 }
@@ -89,12 +83,6 @@ ui <- fluidPage(
                        "Select organization",
                        choices = organization,
                       multiple = TRUE),
-                     
-       # Monitoring locations 
-       selectizeInput("monlocs",
-                      "Select Monitoring Locations",
-                      choices = station,
-                      multiple = TRUE), 
        
        #add action button, idea is to not run query until the button is clicked)
        actionButton("goButton","Run Query"),
@@ -153,7 +141,7 @@ server <- function(input, output) {
    rendd<-toString(sprintf("%s",input$endd))
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),station=c(input$monlocs),reject=TRUE)
+   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),reject=TRUE)
    
    })
    
