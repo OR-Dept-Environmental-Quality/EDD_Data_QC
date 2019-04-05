@@ -244,7 +244,7 @@ output$downloadData <- downloadHandler(
 
 #R markdown report
 output$report<-downloadHandler(
-  filename = function() {paste(input$permittee, Sys.Date() ,"_EDDToxics_Report.pdf", sep="")},
+  filename = function() {paste(input$permittee,"_", Sys.Date() ,"_EDDToxics_Report.pdf", sep="")},
   content=function(file){
     
     #create a file in a temporary directory
@@ -265,7 +265,8 @@ output$report<-downloadHandler(
                  qlcom=input$comm1,
                  dfcom=input$comm2,
                  mcom=input$comm3,
-                 rejcom=input$comm4)
+                 rejcom=input$comm4,
+                 permnum=input$permittee)
       
     rmarkdown::render(tempReport, output_file=file,
                       params=params,

@@ -12,6 +12,7 @@ params:
   mcom: NA
   dfcom: NA
   rejcom: NA
+  permnum: NA
 output: pdf_document
 header-includes:
   \usepackage{booktabs}
@@ -21,6 +22,7 @@ header-includes:
 ---
 
 #`r paste("EDD Toxics Report for: ",params$org)` 
+#`r paste("Permit Number: ",params$permnum)`
 #`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` 
 ## Report by: Aliana Britson 
 
@@ -49,7 +51,7 @@ names(chars)<-c("Pollutant","CAS Number","Observations")
 kable(chars, format='latex', caption="List of Analyzed Pollutants", booktabs=TRUE,longtable=TRUE) %>%
  kable_styling(latex_option="HOLD_position")
 ```
-
+Number of sampling events : `r length(unique(dat$SampleStartDate))`
 
 ## Quantitation Limits 
 A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2015 by DEQ LEAD. 
