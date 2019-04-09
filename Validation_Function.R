@@ -35,7 +35,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #throw warning if unit mismatch, else find the rows where MRL is greater than QL and return them
     
-    if (any(!(is.na(x$QL_Unit)) & x$MDLUnit!=x$QL_Unit)) {return("Warning: Unit Mismatch")}
+    if (any(!(is.na(x$QL_Unit)) & x$MDLUnit!=x$QL_Unit)) {x$issue<-"Warning: Unit Mismatch"}
     
     else {x$issue<-ifelse(
       x$MRLValue>x$QL & x$Result_Numeric<x$MRLValue,
