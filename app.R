@@ -56,12 +56,12 @@ ui <- fluidPage(
 
   sidebarLayout(
       sidebarPanel(
-        #permittee name
+        #permit #
         textInput("permittee",
                   label="Permit Number"),
-        #permit #
+        #Sampling Event Information
         textInput("data_sub",
-                  label="Data Submission"),
+                  label="Number of Sampling Events:"),
         # Add line
         tags$hr(),
         #Add break
@@ -105,6 +105,8 @@ ui <- fluidPage(
         tabsetPanel(
           #all data
           tabPanel("Data",dataTableOutput("table")),
+          tabPanel("Submission Comments",
+                   textAreaInput("pollcom","Submission Comments",width='1000px',height='400px')),
           #quantitation limit issues
           tabPanel("Quantitation Limit Issues",
                    dataTableOutput("ql"),
@@ -236,7 +238,7 @@ server <- function(input, output) {
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
-  filename = function() {paste(input$permittee,"_EDD_Data_Check_",Sys.Date(),"_",input$data_sub,".xlsx", sep="")},
+  filename = function() {paste(input$permittee,"_EDD_Data_Check_",Sys.Date(),".xlsx", sep="")},
   content = function(file) {
     saveWorkbook(dwnld(),file)
 
@@ -255,8 +257,7 @@ output$report<-downloadHandler(
     #create list of characteristics
     #set up parameters to pass to our Rmd document
     params<-list(org=unique(data()$Org_Name),
-                 startdate=input$startd,
-                 enddate=input$endd,
+                 num=input$data_sub,
                  qls=qlchk(),
                  methods=metchk(),
                  diff=dtchk(),
@@ -266,6 +267,7 @@ output$report<-downloadHandler(
                  dfcom=input$comm2,
                  mcom=input$comm3,
                  rejcom=input$comm4,
+                 polc=input$pollcom,
                  permnum=input$permittee)
       
     rmarkdown::render(tempReport, output_file=file,

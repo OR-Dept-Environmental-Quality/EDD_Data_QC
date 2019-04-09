@@ -1,8 +1,7 @@
 ---
 params:
   org: NA
-  startdate: NA
-  enddate: NA
+  num: NA
   qls: NA
   methods: NA
   diff: NA
@@ -13,6 +12,7 @@ params:
   dfcom: NA
   rejcom: NA
   permnum: NA
+  polc: NA
 output: pdf_document
 header-includes:
   \usepackage{booktabs}
@@ -23,7 +23,7 @@ header-includes:
 
 #`r paste("EDD Toxics Report for: ",params$org)` 
 #`r paste("Permit Number: ",params$permnum)`
-#`r paste("Sampling event Dates:",params$startdate," to ",params$enddate)` 
+##`r paste("Number of Sampling Events: ",params$num)`
 ## Report by: Aliana Britson 
 
 ```{r setup-packages-functions, include=FALSE}
@@ -35,23 +35,40 @@ library(kableExtra)
 library(tinytex)
 
 ```
-## Pollutants Analyzed
-Table 1 contains a list of pollutants analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
-``` {r echo=FALSE}
+## Sampling Information and Pollutants Analyzed
+Table 1 contains the sampling dates, project, location, and method of sample collection.  A "24 hr Composite"" is a sample that was collected over the course of 24 hours. A "Composite"" sample is a sample that is made up of six discreete grab samples. Please note that two consecutive days are likely one sampling event, as a 24 hour sample can be started on the same day as other samples and not end until the next day (Dates for 24 hr samples are always the end date of the sample).
+
+```{r echo=FALSE}
+info<-unique(subset(params$data,select=c(SampleStartDate,Project1,StationDes,MLocID,SamplingMethod)))
+info<-info[order(info$SampleStartDate),]
+#summarize samplingmethod into one column
+grp<-info %>% group_by(SampleStartDate) %>%
+  summarize(type=paste(sort(unique(SamplingMethod)),collapse=", "))
+mer<-merge(info,grp, by="SampleStartDate")
+mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type)))
+
+names(mer)<-c("Sample Date","Project","Station Description","Location ID","Sample Collection Method")
+
+kable(mer, format='latex',caption="Sampling Event Information",booktabs=TRUE,row.names = FALSE) %>%
+  kable_styling(latex_option="HOLD_position")
+```
+Table 2 contains a list of pollutants analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
+``` {r echo=FALSE, results='asis'}
 #get the unique names of the pollutants
 dat<-namefrac(params$data)
 chars<-count(dat, Char_Name, CASNumber)
 #sort them alphabetially
 chars<-chars[order(chars$Char_Name),]
 
-
 names(chars)<-c("Pollutant","CAS Number","Observations")
 #will likely need to split into a few tables, a list is overwhelming if permittee does full suite of volatiles and semi-volatiles
 
 kable(chars, format='latex', caption="List of Analyzed Pollutants", booktabs=TRUE,longtable=TRUE) %>%
  kable_styling(latex_option="HOLD_position")
+
+if(length(params$polc)!=0) {cat("**Water Quality Data Steward Comments:**",params$polc)}
 ```
-Number of sampling events : `r length(unique(dat$SampleStartDate))`
+
 
 ## Quantitation Limits 
 A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2015 by DEQ LEAD. 
