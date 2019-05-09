@@ -3,6 +3,7 @@
 # the 'Run App' button above.
 ######This app is meant to help QC data submitted under EDD toxics by NPDES permittees
 
+
 print("Initial data queries may take a few minutes.")
 
 library(shiny)
@@ -10,6 +11,10 @@ library(AWQMSdata)
 library(dplyr)
 library(openxlsx)
 library(shinybusy)
+library(rmarkdown)
+library(tidyverse)
+
+
 
 #attempt to turn off scientific notation
 options(scipen=999)
@@ -24,6 +29,7 @@ source("E:/Permit Job/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
 source("Validation_Function.R")
 
 
+
 # Query out the valid values ---------------------------------------------
 #only need date, org,station, and whether rejected or not for query
 
@@ -32,18 +38,12 @@ source("Validation_Function.R")
 # 7 days old, query out stations and organizations and save the cache
 if(!file.exists("query_cache.RData") | 
    difftime(Sys.Date() ,file.mtime("query_cache.RData") , units = c("days")) > 7){
-  
-
-#NPDES_AWQMS_Stations functions only pulls stations 
-station <- NPDES_AWQMS_Stations()
-station <- station$MLocID
-station <- sort(station)
 
 organization <- AWQMS_Orgs()
 organization <- organization$OrganizationID
 organization <- sort(organization)
 
-save(station, organization, file = 'query_cache.RData')
+save(organization, file = 'query_cache.RData')
 } else {
   load("query_cache.RData")
 }
@@ -56,12 +56,12 @@ ui <- fluidPage(
 
   sidebarLayout(
       sidebarPanel(
-        #permittee name
-        textInput("permittee",
-                  label="Permittee Name"),
         #permit #
+        textInput("permittee",
+                  label="Permit Number"),
+        #Sampling Event Information
         textInput("data_sub",
-                  label="Data Submission"),
+                  label="Number of Sampling Events:"),
         # Add line
         tags$hr(),
         #Add break
@@ -83,17 +83,13 @@ ui <- fluidPage(
                        "Select organization",
                        choices = organization,
                       multiple = TRUE),
-                     
-       # Monitoring locations 
-       selectizeInput("monlocs",
-                      "Select Monitoring Locations",
-                      choices = station,
-                      multiple = TRUE), 
        
        #add action button, idea is to not run query until the button is clicked)
        actionButton("goButton","Run Query"),
-       #add a download button
-       downloadButton('downloadData', 'Download Data')
+       #add an excel download button
+       downloadButton('downloadData', 'Download Data'),
+       #add Report download button
+       downloadButton('report','Download PDF Report')
         ),
 
 
@@ -109,13 +105,24 @@ ui <- fluidPage(
         tabsetPanel(
           #all data
           tabPanel("Data",dataTableOutput("table")),
-        #quantitation limit issues
-        tabPanel("Quantitation Limit Issues",dataTableOutput("ql")),
-        #Total vs dissolved
-        tabPanel("Total vs Dissolved",dataTableOutput("diff")),
-        #methods used
-        tabPanel("Methods",dataTableOutput("methods")),
-        tabPanel("Rejected Data",dataTableOutput("rejected"))
+          tabPanel("Submission Comments",
+                   textAreaInput("pollcom","Submission Comments",width='1000px',height='400px')),
+          #quantitation limit issues
+          tabPanel("Quantitation Limit Issues",
+                   dataTableOutput("ql"),
+                   textAreaInput("comm1","Comments",width='1000px',height='400px')),
+          #Total vs dissolved
+          tabPanel("Total vs Dissolved",
+                   dataTableOutput("diff"),
+                   textAreaInput("comm2","Comments",width='1000px',height='400px')),
+          #CFR issues
+          tabPanel("Methods",
+                   dataTableOutput("methods"),
+                   textAreaInput("comm3","Comments",width='1000px',height='400px')),
+          #rejected data
+          tabPanel("Rejected Data",
+                   dataTableOutput("rejected"),
+                   textAreaInput("comm4","Comments",width='1000px',height='400px'))
         )
    )
 ),
@@ -136,7 +143,7 @@ server <- function(input, output) {
    rendd<-toString(sprintf("%s",input$endd))
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),station=c(input$monlocs),reject=TRUE)
+   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),reject=TRUE)
    
    })
    
@@ -231,15 +238,53 @@ server <- function(input, output) {
 #set to give NAs as blank cells
 output$downloadData <- downloadHandler(
   
-  filename = function() {paste("EDD_Data_Check", Sys.Date(),"_",input$permitee,"_",input$data_sub,".xlsx", sep="")},
+  filename = function() {paste(input$permittee,"_EDD_Data_Check_",Sys.Date(),".xlsx", sep="")},
   content = function(file) {
     saveWorkbook(dwnld(),file)
 
     })
 
+#R markdown report
+output$report<-downloadHandler(
+  filename = function() {paste(input$permittee,"_", Sys.Date() ,"_EDDToxics_Report.pdf", sep="")},
+  content=function(file){
+    
+    #create a file in a temporary directory
+    tempReport<-file.path(tempdir(),"EDDToxics_Rmarkdown.Rmd")
+    #copy our report to the temporary directory file
+    file.copy("EDDToxics_Rmarkdown.Rmd",tempReport,overwrite=TRUE)
+    
+    #create list of characteristics
+    #set up parameters to pass to our Rmd document
+    params<-list(org=unique(data()$Org_Name),
+                 num=input$data_sub,
+                 qls=qlchk(),
+                 methods=metchk(),
+                 diff=dtchk(),
+                 reject=rejchk(),
+                 data=data(),
+                 qlcom=input$comm1,
+                 dfcom=input$comm2,
+                 mcom=input$comm3,
+                 rejcom=input$comm4,
+                 polc=input$pollcom,
+                 permnum=input$permittee)
+      
+    rmarkdown::render(tempReport, output_file=file,
+                      params=params,
+                      clean=TRUE,
+                      envir=new.env(parent= globalenv())
+                      
+   )
+  }
+)
+
 }
+
 # Run the application
+
 shinyApp(ui = ui, server = server)
+
 
 #make sure you do runApp(launch.browser=TRUE) or in the Run App tab, click "Run External" if you want to download-
 #only works in Chrome

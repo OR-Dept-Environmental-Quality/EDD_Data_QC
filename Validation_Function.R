@@ -35,7 +35,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #throw warning if unit mismatch, else find the rows where MRL is greater than QL and return them
     
-    if (any(!(is.na(x$QL_Unit)) & x$MDLUnit!=x$QL_Unit)) {return("Warning: Unit Mismatch")}
+    if (any(!(is.na(x$QL_Unit)) & x$MDLUnit!=x$QL_Unit)) {x$issue<-"Warning: Unit Mismatch"}
     
     else {x$issue<-ifelse(
       x$MRLValue>x$QL & x$Result_Numeric<x$MRLValue,
@@ -43,7 +43,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
       NA)
     
     return(subset(x,!(is.na(issue)),
-           select=c("Char_Name","CASNumber","act_id","SampleStartDate","SampleStartTime","Result","Result_Unit","MDLValue","MDLUnit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))}
+           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))}
     
   }
   
@@ -109,25 +109,25 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     #note that EPA method 625 and 624 were valid CFR methods up until the 2017 revision of CFR 136, where they were replaced with 
     #625.1 and 624.1, make sure this is noted in the code so we don't flag pre 2017 data as out of compliance when it was actually fine
     x$CFR_Method<-ifelse(x$Method_Code %in% c("624","625","608") & x$SampleStartDate<"2017-09-27",
-                         paste0("Prior to 2017 CFR method change, Method is CFR approved"),
+                         paste0("Yes"),
                          x$CFR_Method)
     
     x$CFR_Method<-ifelse(x$Method_Code %in% c("624","625","608") & x$SampleStartDate>"2017-09-27",
-                         paste0("Method Changed 9/27/2017, update needed"),
+                         paste0("Out of Date (9/27/2017)"),
                          x$CFR_Method)
     
     #no methods for tributyl phosphate, salinity, Demeton (8065-48-3) in CFR 136
     x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton"),
-                     paste0("No CFR method specified for characteristic"),
+                     paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
     x$CFR_Method<-ifelse(is.na(x$CFR_Method),
-                         paste0("No, check CFR 136 for appropriate methods"),
+                         paste0("No, check CFR 136"),
                          x$CFR_Method)
     
     #return method results
-    sub<-subset(x, CFR_Method %in% c("No, check CFR 136 for appropriate methods","Method Changed 9/27/2017, update needed"),
-                select=c(CASNumber.x,Char_Name,Method_Code,Method_Context,CFR_Method,SampleStartDate))
+    sub<-subset(x, CFR_Method %in% c("No, check CFR 136","Out of Date (9/27/2017)","No CFR method for pollutant, check permit"),
+                select=c(Char_Name,Method_Code,Method_Context,CFR_Method))
     sub<-unique(sub)
     
     return(sub)
@@ -135,10 +135,10 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
   rej<-function(x){
     #x is dataset
+    x<-namefrac(x)
     sub<-subset(x,Result_status %in% c("Rejected"),
-                select=c(Org_Name,Project1,MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
-                         Sample_Fraction,CASNumber,Result,Result_Unit,Method_Code,Method_Context,MDLValue,MRLValue,
-                         Result_Comment,Result_status))
+                select=c(MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
+                         CASNumber,Result,Result_Unit,Method_Code,Result_Comment,Result_status))
   }
   
 
