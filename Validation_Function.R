@@ -13,7 +13,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   ql<-function(x){
     require(openxlsx)
     require(dplyr)
-    source("//deqlab1/abrits/Permit Job/R_Scripts/ShinyNPDES_AWQMS/NameandFraction.R")
+    source("//deqlab1/WQDataSteward/R_Scripts/ShinyNPDES_AWQMS/NameandFraction.R")
 
     #read in table with QLs
     qls<-read.xlsx("2_21_19_QLs.xlsx",colNames=TRUE,na.string="NA")

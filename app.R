@@ -24,7 +24,7 @@ options(scipen=999)
 
 #Need to remake query, cannot use AWQMS_Data as it pulls out too much data for the app to work,
 #plus, for NPDES only need a subset of data- 
-source("E:/Permit Job/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
+source("W:/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
 #function for data validations
 source("Validation_Function.R")
 
