@@ -21,9 +21,9 @@ header-includes:
   \usepackage{array}
 ---
 
-#`r paste("EDD Toxics Report for: ",params$org)` 
-#`r paste("Permit Number: ",params$permnum)`
-##`r paste("Number of Sampling Events: ",params$num)`
+# `r paste("EDD Toxics Report for: ",params$org)` 
+# `r paste("Permit Number: ",params$permnum)`
+## `r paste("Number of Sampling Events: ",params$num)`
 ## Report by: Aliana Britson 
 
 ```{r setup-packages-functions, include=FALSE}
