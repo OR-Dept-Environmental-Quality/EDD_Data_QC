@@ -47,10 +47,10 @@ grp<-info %>% group_by(SampleStartDate) %>%
 mer<-merge(info,grp, by="SampleStartDate")
 mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type)))
 
-names(mer)<-c("Sample Date","Project","Station Description","Location ID","Sample Collection Method")
+names(mer)<-c("Sample Date","Project","Station Description","Location ID","Sample Collection Method(s)")
 
 kable(mer, format='latex',caption="Sampling Event Information",booktabs=TRUE,row.names = FALSE) %>%
-  kable_styling(latex_option="HOLD_position")
+  kable_styling(latex_options=c("HOLD_position","scale_down"))
 ```
 Table 2 contains a list of pollutants analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
 ``` {r echo=FALSE, results='asis'}
