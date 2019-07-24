@@ -64,7 +64,7 @@ names(chars)<-c("Pollutant","CAS Number","Observations")
 #will likely need to split into a few tables, a list is overwhelming if permittee does full suite of volatiles and semi-volatiles
 
 kable(chars, format='latex', caption="List of Analyzed Pollutants", booktabs=TRUE,longtable=TRUE) %>%
- kable_styling(latex_option="HOLD_position")
+ kable_styling(latex_option="HOLD_position","reapeat_header")
 
 if(length(params$polc)!=0) {cat("**Water Quality Data Steward Comments:**",params$polc)}
 ```
@@ -109,7 +109,7 @@ methd<-methd[order(methd$Char_Name),]
 
 names(methd)<-c("Pollutant","Method","Agency","Method Status")
 if(nrow(methd)!=0) {kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE, longtable=TRUE) %>%
-                   kable_styling(latex_options=c("HOLD_position")) %>%
+                   kable_styling(latex_options=c("HOLD_position",,"reapeat_header")) %>%
                    column_spec(1,"5cm")} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(methd)!=0) {cat("**Water Quality Data Steward Comments:**",params$mcom)}
