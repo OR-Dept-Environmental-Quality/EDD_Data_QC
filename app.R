@@ -43,7 +43,10 @@ organization <- AWQMS_Orgs()
 organization <- organization$OrganizationID
 organization <- sort(organization)
 
-save(organization, file = 'query_cache.RData')
+project<-AWQMS_Projects()
+project<-sort(project$Project)
+
+save(organization, project, file = 'query_cache.RData')
 } else {
   load("query_cache.RData")
 }
@@ -83,6 +86,12 @@ ui <- fluidPage(
                        "Select organization",
                        choices = organization,
                       multiple = TRUE),
+       
+       #projects
+       selectizeInput("proj",
+                      "Select Project",
+                      choices=project,
+                      multiple=TRUE),
        
        #add action button, idea is to not run query until the button is clicked)
        actionButton("goButton","Run Query"),
@@ -143,7 +152,7 @@ server <- function(input, output) {
    rendd<-toString(sprintf("%s",input$endd))
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),reject=TRUE)
+   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),project=c(input$project),reject=TRUE)
    
    })
    
