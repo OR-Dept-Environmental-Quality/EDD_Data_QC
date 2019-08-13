@@ -128,6 +128,10 @@ ui <- fluidPage(
           tabPanel("Methods",
                    dataTableOutput("methods"),
                    textAreaInput("comm3","Comments",width='1000px',height='400px')),
+          #estimated data
+          tabPanel("Estimated Data (not including J flag data)",
+                   dataTableOutput("estimated"),
+                   textAreaInput("comm5","Comments",width='1000px',height='400px')),
           #rejected data
           tabPanel("Rejected Data",
                    dataTableOutput("rejected"),
@@ -211,6 +215,16 @@ server <- function(input, output) {
      metchk()
    })
    
+   #get estimated data that is above MRL
+   estchk<-eventReactive(input$goButton,{
+      estm(data())
+   })
+   
+   #estimated view for shiny app
+   output$estimated<-renderDataTable({
+      estchk()
+   })
+   
    #get rejected data
    rejchk<-eventReactive(input$goButton,{
      rej(data())
@@ -236,6 +250,9 @@ server <- function(input, output) {
      #method CFR check
      addWorksheet(wb,"Method_Check")
      writeDataTable(wb,sheet="Method_Check",x=metchk(),tableStyle="none")
+     #add estimated check
+     addWorksheet(wb,"Estimated_Data")
+     writeDataTable(wb,sheet="Estimated_Data",x=estchk(),tableStyle="none")
      #add rejected check
      addWorksheet(wb,"Rejected_Data")
      writeDataTable(wb,sheet="Rejected_Data",x=rejchk(),tableStyle="none")
@@ -270,12 +287,14 @@ output$report<-downloadHandler(
                  qls=qlchk(),
                  methods=metchk(),
                  diff=dtchk(),
+                 estimate=estchk(),
                  reject=rejchk(),
                  data=data(),
                  qlcom=input$comm1,
                  dfcom=input$comm2,
                  mcom=input$comm3,
                  rejcom=input$comm4,
+                 estcom=input$comm5,
                  polc=input$pollcom,
                  permnum=input$permittee)
       
