@@ -101,16 +101,14 @@ methd<-namefrac(params$methods)
 methd<-methd %>%
        mutate(Method_Context=str_replace(Method_Context,"U.S. Environmental Protection Agency","US EPA")) %>%
        mutate(Method_Context=str_replace(Method_Context,"Georgia-Pacific Consumer Operations LLC",
-                                         "Georgia-Pacific")) %>%
-       mutate(Method_Context=str_replace(Method_Context,"American Public Health Association","APHA"))
+                                         "Georgia-Pacific"))
 
 #sort by pollutant
 methd<-methd[order(methd$Char_Name),]
 
 names(methd)<-c("Pollutant","Method","Agency","Method Status")
 if(nrow(methd)!=0) {kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE, longtable=TRUE) %>%
-                   kable_styling(latex_options=c("HOLD_position")) %>%
-                   column_spec(1,"5cm")} else {cat("**NO KNOWN ISSUES**")}
+                   kable_styling(latex_options=c("HOLD_position"))} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(methd)!=0) {cat("**Water Quality Data Steward Comments:**",params$mcom)}
 ```
