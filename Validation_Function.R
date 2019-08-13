@@ -133,6 +133,16 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     return(sub)
   }
   
+  #estimated data (want to remove any rejected data (will be covered by rejected function), or J flag data)
+  estm<-function(x){
+    x<-namefrac(x)
+    
+    sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & (x$Result_Numeric>=x$MRLValue | x$Result_Numeric<=x$MDLValue),
+                  select=c(MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
+                           CASNumber,Result,Result_Unit,Method_Code,Result_Comment,Result_Type,Result_status))
+  }
+  
+  #rejected data
   rej<-function(x){
     #x is dataset
     x<-namefrac(x)
@@ -143,4 +153,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2019-01-01", enddate = "2019-07-01" , org = "SSSD(NOSTORETID)",project="South Suburban Copper BLM", HUC8 = NULL, HUC8_Name = NULL,reject=TRUE)
+x<-NPDES_AWQMS_Qry(startdate = "2019-01-01", enddate = "2019-07-01" , org = "GP-WM",reject=TRUE)
