@@ -35,7 +35,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #throw warning if unit mismatch, else find the rows where MRL is greater than QL and return them
     
-    if (any(!(is.na(x$QL_Unit)) & x$MDLUnit!=x$QL_Unit)) {x$issue<-"Warning: Unit Mismatch"}
+    if (any(!(is.na(x$QL_Unit)) & x$MRLUnit!=x$QL_Unit)) {x$issue<-"Warning: Unit Mismatch"}
     
     else {x$issue<-ifelse(
       x$MRLValue>x$QL & x$Result_Numeric<x$MRLValue,
@@ -143,4 +143,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2015-01-01", enddate = "2019-01-01" , org = "GP-WM", HUC8 = NULL, HUC8_Name = NULL,reject=TRUE)
+#x<-NPDES_AWQMS_Qry(startdate = "2019-01-01", enddate = "2019-07-01" , org = "SSSD(NOSTORETID)",project="South Suburban Copper BLM", HUC8 = NULL, HUC8_Name = NULL,reject=TRUE)
