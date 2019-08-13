@@ -135,18 +135,18 @@ if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved frac
 if(nrow(dff)!=0) {cat("**Water Quality Data Steward Comments:**",params$dfcom)}
 ```
 
-##Estimated Data
-Data may be estimated for a variety of reasons including issues with quality control, sampling, hold time, and/or storage that causes the data to be biased high or low. This table does not include "J flag" data, ie results that fall between the method detection limit and quantitation limit, as this data . Estimated data may still be usable for permitting purposes, but must be used with caution. &nbsp;
+## Estimated Data
+Data may be estimated for a variety of reasons including issues with quality control, sampling, hold time, and/or storage that causes the data to be biased high or low. This table does not include "J flag" data, ie results that fall between the method detection limit and quantitation limit, as this data is routinely estimated and does not reflect any potential bias in the result. Estimated data may still be usable for permitting purposes, but must be used with caution. &nbsp;
 
 ``` {r echo=FALSE, results='asis'}
 est<-params$estimate
 est<-subset(est,select=c(act_id,Char_Name,Result,Result_Unit,Result_Comment))
-names(est)<-c("Activity ID","Pollutant","Result","Result_Unit","Result_Comment")
+names(est)<-c("Activity ID","Pollutant","Result","Unit","Comment")
 if(nrow(est)!=0) {kable(est,format='latex', caption="Estimated Data (not including J flag data)",booktabs=TRUE, row.names=FALSE,
                         longtable=TRUE) %>%
                   kable_styling(latex_options=c("HOLD_position","repeat_header")) %>%
                   column_spec(5,"7cm")%>%
-                  column_spec(2,"4cm")} else {cat("**NO KNOWN ISSUES**")}
+                  column_spec(2,"3.5cm")} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(est)!=0) {cat("**Water Quality Data Steward Comments:**", params$estcom)}
 
@@ -158,7 +158,7 @@ In some cases, data does not pass quality control analysis. This data may still 
 ``` {r echo=FALSE, results='asis'}
 rej<-params$reject
 rej<-subset(rej,select=c(act_id, Char_Name, Result, Result_Unit, Result_Comment))
-names(rej)<-c("Activity ID","Pollutant","Result","Result_Unit","Result_Comment")
+names(rej)<-c("Activity ID","Pollutant","Result","Unit","Comment")
 if(nrow(rej)!=0) {kable(rej,format='latex', caption="Rejected Data",booktabs=TRUE, row.names=FALSE) %>%
                   kable_styling(latex_options=c("HOLD_position","scale_down")) %>%
                   column_spec(5,"10cm")} else {cat("**NO KNOWN ISSUES**")}
