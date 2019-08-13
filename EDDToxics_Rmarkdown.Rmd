@@ -6,11 +6,13 @@ params:
   methods: NA
   diff: NA
   reject: NA
+  estimate: NA
   data: NA
   qlcom: NA
   mcom: NA
   dfcom: NA
   rejcom: NA
+  estcom: NA
   permnum: NA
   polc: NA
 output: pdf_document
@@ -91,7 +93,7 @@ if(nrow(qlc)!=0) {cat("**Water Quality Data Steward Comments:**",params$qlcom)}
 
 
 ## Methods 
- Permittees are required to use methods approved under 40 CFR 136. There are some pollutants that have no approved methods under 40 CFR 136. In some cases, permittees may obtain approval to perform different methods for specific pollutants through EPA. These instances are permittee-specific and should be contained within the permit. Please see the individual permit. 
+ Permittees are required to use methods approved under 40 CFR 136. There are some pollutants that have no approved methods under 40 CFR 136. In some cases, permittees may obtain approval to perform different methods for specific pollutants through EPA. These instances are permittee-specific and should be contained within the permit. Please see the individual permit. &nbsp;
 
 
 ``` {r echo=FALSE, results='asis'}
@@ -109,7 +111,7 @@ methd<-methd[order(methd$Char_Name),]
 
 names(methd)<-c("Pollutant","Method","Agency","Method Status")
 if(nrow(methd)!=0) {kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE, longtable=TRUE) %>%
-                   kable_styling(latex_options=c("HOLD_position",,"reapeat_header")) %>%
+                   kable_styling(latex_options=c("HOLD_position","repeat_header")) %>%
                    column_spec(1,"5cm")} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(methd)!=0) {cat("**Water Quality Data Steward Comments:**",params$mcom)}
@@ -133,6 +135,22 @@ if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved frac
 if(nrow(dff)!=0) {cat("**Water Quality Data Steward Comments:**",params$dfcom)}
 ```
 
+##Estimated Data
+Data may be estimated for a variety of reasons including issues with quality control, sampling, hold time, and/or storage that causes the data to be biased high or low. This table does not include "J flag" data, ie results that fall between the method detection limit and quantitation limit, as this data . Estimated data may still be usable for permitting purposes, but must be used with caution. &nbsp;
+
+``` {r echo=FALSE, results='asis'}
+est<-params$estimate
+est<-subset(est,select=c(act_id,Char_Name,Result,Result_Unit,Result_Comment))
+names(est)<-c("Activity ID","Pollutant","Result","Result_Unit","Result_Comment")
+if(nrow(est)!=0) {kable(est,format='latex', caption="Estimated Data (not including J flag data)",booktabs=TRUE, row.names=FALSE,
+                        longtable=TRUE) %>%
+                  kable_styling(latex_options=c("HOLD_position","repeat_header")) %>%
+                  column_spec(5,"7cm")%>%
+                  column_spec(2,"4cm")} else {cat("**NO KNOWN ISSUES**")}
+
+if(nrow(est)!=0) {cat("**Water Quality Data Steward Comments:**", params$estcom)}
+
+```
 
 ## Rejected Data
 In some cases, data does not pass quality control analysis. This data may still be usable for permitting purposes, but must be used with caution.  &nbsp;
