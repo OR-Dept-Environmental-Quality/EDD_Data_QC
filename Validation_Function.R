@@ -38,7 +38,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     if (any(!(is.na(x$QL_Unit)) & x$MRLUnit!=x$QL_Unit)) {x$issue<-"Warning: Unit Mismatch"}
     
     else {x$issue<-ifelse(
-      x$MRLValue>x$QL & x$Result_Numeric<x$MRLValue,
+      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"),
       "QL not met, Result below QL",
       NA)
     
@@ -153,4 +153,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-x<-NPDES_AWQMS_Qry(startdate = "2019-01-01", enddate = "2019-07-01" , org = "GP-WM",reject=TRUE)
+#x<-NPDES_AWQMS_Qry(startdate = "2019-01-01", enddate = "2019-07-01" , org = "GP-WM",reject=TRUE)
