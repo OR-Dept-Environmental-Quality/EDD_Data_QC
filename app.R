@@ -156,7 +156,7 @@ server <- function(input, output) {
    rendd<-toString(sprintf("%s",input$endd))
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),project=c(input$project),reject=TRUE)
+   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),project=c(input$proj),reject=TRUE)
    
    })
    
