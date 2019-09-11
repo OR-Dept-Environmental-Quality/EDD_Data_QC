@@ -83,8 +83,8 @@ qlc<-subset(qlc,select=c("Char_Name","act_id","Result","MRLValue","MRLUnit","QL"
 #rename columns
 names(qlc)<-c("Pollutant","Activity ID","Result","Submitted QL","Unit","Established QL","Unit")
 
- if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE) %>%
-  kable_styling(latex_options=c("HOLD_position","scale_down"))} else{cat("**NO KNOWN ISSUES**")}
+ if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position","scale_down","repeat_header"))} else{cat("**NO KNOWN ISSUES**")}
 
 if(nrow(qlc)!=0) {cat("**Water Quality Data Steward Comments:**",params$qlcom)}
 
@@ -159,8 +159,9 @@ In some cases, data does not pass quality control analysis. This data may still 
 rej<-params$reject
 rej<-subset(rej,select=c(act_id, Char_Name, Result, Result_Unit, Result_Comment))
 names(rej)<-c("Activity ID","Pollutant","Result","Unit","Comment")
-if(nrow(rej)!=0) {kable(rej,format='latex', caption="Rejected Data",booktabs=TRUE, row.names=FALSE) %>%
-                  kable_styling(latex_options=c("HOLD_position","scale_down")) %>%
-                  column_spec(5,"10cm")} else {cat("**NO KNOWN ISSUES**")}
+if(nrow(rej)!=0) {kable(rej,format='latex', caption="Rejected Data",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+                  kable_styling(latex_options=c("HOLD_position","scale_down","repeat_header")) %>%
+    column_spec(2,"4cm")%>%              
+    column_spec(5,"8cm")} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(rej)!=0) {cat("**Water Quality Data Steward Comments:**", params$rejcom)}
