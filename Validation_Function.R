@@ -20,8 +20,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #need to do unit conversions to compare data and ql list, all need to be in ug/l, except for Alkalinity, which should be in mg/L
     #checked AWQMS database, all alkalinity is reported in mg/l or mg/l CaCO3, no need for conversion
-    #get list of char names 
-    names<-unique(x$Char_Name)
+    #get list of char names (just use names in the ql table, don't need to compare if the analyte isn't in that table)
+    names<-unique(qls$Char_Name)
     #remove alkalinity, that needs to stay as mg/l
     names<-names[names !="Alkalinity, total"]
     
@@ -33,17 +33,15 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     x<-left_join(x,qls,by="Char_Name")
     
-    #throw warning if unit mismatch, else find the rows where MRL is greater than QL and return them
-    
-    if (any(!(is.na(x$QL_Unit)) & x$MRLUnit!=x$QL_Unit)) {x$issue<-"Warning: Unit Mismatch"}
-    
-    else {x$issue<-ifelse(
+    #compare QL to MRL (got rid of unit mismatch code, was causing lot of problems and we've got the basic units covered)
+    x$issue<-ifelse(
       x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"),
       "QL not met, Result below QL",
       NA)
     
     return(subset(x,!(is.na(issue)),
-           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))}
+           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))
+    
     
   }
   
@@ -153,4 +151,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2019-01-01", enddate = "2019-07-01" , org = "GP-WM",reject=TRUE)
+#x<-NPDES_AWQMS_Qry(startdate = "2019-07-017", enddate = "2019-07-017" , org = "CITY_KLAMATHFALLS(NOSTORETID)",reject=TRUE)
