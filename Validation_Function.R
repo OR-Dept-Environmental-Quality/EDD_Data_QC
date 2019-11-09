@@ -40,7 +40,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
       NA)
     
     return(subset(x,!(is.na(issue)),
-           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))
+           select=c("Char_Name","CASNumber","act_id","Result","Result_Unit","MDLValue","MRLValue","MRLUnit","QL","QL_Unit","Result_Type","Result_Comment","issue")))
     
     
   }
@@ -49,6 +49,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   dvst<-function(x){
     y<-subset(x,x$Sample_Fraction %in% c("Total Recoverable","Dissolved","Total"))
     
+    #need to make this conditional, returns error if there are no analytes that have the right sample fractions
+    if(nrow(y)!=0) {
     #create new identifier out of activity id and characteristic name
     y$comb<-paste0(y$act_id,",",y$Char_Name)
     
@@ -74,7 +76,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     new$diff<-new$total-new$dissolved
     
     #calculate the RPD
-    new$RPD<-((new$dissolved-new$total)/2)*100
+    new$RPD<-abs(new$diff)/((new$total+new$dissolved)/2)*100
     
     #if difference is negative, and if it is larger than the MDL, then it is an issue
     issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
@@ -82,8 +84,17 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
                                 "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment"))
+    }
+    #create empty data frame to ensure code continues to run smoothly
+    
+    else {final<-data.frame(matrix(ncol=16,nrow=0))
+    names<-c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
+    "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment")
+    colnames(final)<-names
+    }
     
     return(final)
+    
   }
   
   
@@ -114,8 +125,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
                          paste0("Out of Date (9/27/2017)"),
                          x$CFR_Method)
     
-    #no methods for tributyl phosphate, salinity, Demeton (8065-48-3) in CFR 136
-    x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton"),
+    #no methods for tributyl phosphate, salinity, Demeton (8065-48-3), or inorganic arsenic in CFR 136
+    x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton","Arsenic, Inorganic"),
                      paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
@@ -151,4 +162,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2019-07-017", enddate = "2019-07-017" , org = "CITY_KLAMATHFALLS(NOSTORETID)",reject=TRUE)
+#x<-NPDES_AWQMS_Qry(startdate = "2019-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)",reject=TRUE)
