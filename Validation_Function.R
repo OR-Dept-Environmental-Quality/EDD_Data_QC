@@ -78,6 +78,9 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     #calculate the RPD
     new$RPD<-abs(new$diff)/((new$total+new$dissolved)/2)*100
     
+    #round the RPD value
+    new$RPD<-round(new$RPD,2)
+    
     #if difference is negative, and if it is larger than the MDL, then it is an issue
     issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
     cont<-merge(issues,y, by="comb")
