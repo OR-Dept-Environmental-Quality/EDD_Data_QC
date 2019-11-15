@@ -128,7 +128,7 @@ if(nrow(qlc)!=0) {cat("**Water Quality Data Steward Comments:**",params$qlcom)}
 
 
 ``` {r echo=FALSE, results='asis'}
-methd<-namefrac(params$methods)
+methd<-params$methods
 
 #shorten the long agency names
 methd<-methd %>%
