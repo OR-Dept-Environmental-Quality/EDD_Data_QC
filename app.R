@@ -22,8 +22,7 @@ options(scipen=999)
 #in case the shinybusy package needs to be installed/reinstalled
 #remotes::install_github("dreamRs/shinybusy")
 
-#Need to remake query, cannot use AWQMS_Data as it pulls out too much data for the app to work,
-#plus, for NPDES only need a subset of data- 
+#Need to use NPDES data query I developed, cannot use AWQMS_Data as it pulls out too much data for the app to work,
 source("W:/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
 #function for data validations
 source("Validation_Function.R")
@@ -31,7 +30,7 @@ source("Validation_Function.R")
 
 
 # Query out the valid values ---------------------------------------------
-#only need date, org,station, and whether rejected or not for query
+#only need date, org, and project for data query
 
 
 # Check to see if saved cache of data exists. If it does not, or is greater than
@@ -276,6 +275,7 @@ output$report<-downloadHandler(
   content=function(file){
     
     #create a file in a temporary directory
+    #this is so that if I ever don't have write permissions to the current working directory I don't get shut down
     tempReport<-file.path(tempdir(),"EDDToxics_Rmarkdown.Rmd")
     #copy our report to the temporary directory file
     file.copy("EDDToxics_Rmarkdown.Rmd",tempReport,overwrite=TRUE)
