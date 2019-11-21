@@ -25,9 +25,19 @@ header-includes:
   \let\oldrule=\rule
   \renewcommand{\rule}[1]{\oldrule{\linewidth}}
 ---
+```{r setup-packages-functions, include=FALSE}
+library(knitr)
+
+#including kableExtra seems to mess with booktabs and float latex packages, so compile fails on second pdf. 
+#included packages in YAML header to fix problem
+library(kableExtra)
+library(tinytex)
+
+```
+
 ```{r logo, echo=FALSE,fig.align='left', out.width="400px",out.height="200px"}
 knitr::include_graphics("W:/R_Scripts/Split_Code/DEQ-logo-color-notransp-horiz750x156.png")
-#
+
 ```
 
 # `r paste("EDD Toxics Report for: ",params$org)` 
@@ -47,35 +57,38 @@ knitr::include_graphics("W:/R_Scripts/Split_Code/DEQ-logo-color-notransp-horiz75
 
 ***              
 
-```{r setup-packages-functions, include=FALSE}
-library(knitr)
-
-#including kableExtra seems to mess with booktabs and float latex packages, so compile fails on second pdf. 
-#included packages in YAML header to fix problem
-library(kableExtra)
-library(tinytex)
-
-```
 ## Sampling Information and Pollutants Analyzed
 Table 1 contains the sampling dates, project, location, and method of sample collection.  A "24 hr Composite" is a sample that was collected over the course of 24 hours. A "Composite" sample is a sample that is made up of six discreete grab samples. Please note that two consecutive days are likely one sampling event, as a 24 hour sample can be started on the same day as other samples and not end until the next day (Dates for 24 hr samples are always the end date of the sample).
 
 ```{r echo=FALSE}
 #get unique date, project, station, and sampling method from data
-info<-unique(subset(params$data,select=c(SampleStartDate,Project1,StationDes,MLocID,SamplingMethod)))
+info<-unique(subset(params$data,select=c(SampleStartDate,Project1,StationDes,MLocID,SamplingMethod,act_id)))
 #order by sample start date
 info<-info[order(info$SampleStartDate),]
 
 #summarize samplingmethod into one column
 grp<-info %>% group_by(SampleStartDate, MLocID) %>%
   summarize(type=paste(sort(unique(SamplingMethod)),collapse=", "))
+
 #merge the grouped info into the data frame
 mer<-merge(info,grp, by=c("SampleStartDate","MLocID"))
-mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type)))
-#fix the names
-names(mer)<-c("Sample Date","Project","Station Description","Location ID","Sample Collection Method(s)")
+mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type,act_id)))
 
-kable(mer, format='latex',caption="Sampling Event Information",booktabs=TRUE,row.names = FALSE) %>%
-  kable_styling(latex_options=c("HOLD_position","scale_down","repeat_header"))
+#summarize activity IDs into one column
+actgrp<-info %>% group_by(SampleStartDate, MLocID) %>%
+  summarize(type=paste(sort(unique(act_id)),collapse=", "))
+
+#merge the grouped info into the data frame
+mer<-merge(mer,actgrp, by=c("SampleStartDate","MLocID"))
+mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type.x,type.y)))
+  
+#fix the names
+names(mer)<-c("Sample Date","Project","Station Description","Location ID","Sample Collection Method(s)","Activity ID(s)")
+
+kable(mer, format='latex',caption="Sampling Event Information",booktabs=TRUE,row.names = FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position","repeat_header")) %>%
+  column_spec(5,"3cm") %>%
+  column_spec(6,"3cm")
 ```
 Table 2 contains a list of pollutants analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
 
@@ -108,14 +121,18 @@ A quantitation limit (QL) is the lowest amount of a pollutant that can be reliab
 
 qlc<-params$qls
 qlc<-subset(qlc,select=c("Char_Name","act_id","Result","MRLValue","MDLValue","MRLUnit","QL","QL_Unit"))
+
+#convert MDL to character to remove trailing zeroes
+qlc$MDLValue<-as.character(qlc$MDLValue)
+
 #rename columns
 names(qlc)<-c("Pollutant","Activity ID","Result","MRL","MDL","Unit","Established QL","Unit")
 
 if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for which the provided QLs are not sufficiently sensitive. This table uses the current established QLs from DEQ LEAD that were updated in 2015. In some cases, permitees have the option of providing matrix or sample specific QLs, please see the individual permit for any permittee-specific QLs. The MRL column is the value submitted by the lab as the lowest value the instrument can reliably measure. The MDL column is the value submitted by the lab as the lowest value that the instrument can detect an analyte.")}
 
  if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
-  kable_styling(latex_options=c("HOLD_position","repeat_header"))}%>%
-                   column_spec(1,"5cm") else{cat("**NO KNOWN ISSUES**")}
+  kable_styling(latex_options=c("HOLD_position","repeat_header"))%>%
+                   column_spec(1,"5cm")} else{cat("**NO KNOWN ISSUES**")}
 
 if(nrow(qlc)!=0) {cat("**Water Quality Data Steward Comments:**",params$qlcom)}
 
@@ -143,8 +160,8 @@ methd<-methd[order(methd$Char_Name),]
 names(methd)<-c("Pollutant","Method","Agency","Method Status")
 if(nrow(methd)!=0) {kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE, longtable=TRUE) %>%
                    kable_styling(latex_options=c("HOLD_position","repeat_header")) %>%
-                   column_spec(1,"5cm")%>%
-                   column_spec(4,"5cm")} else {cat("**NO KNOWN ISSUES**")}
+                   column_spec(1,"4cm")%>%
+                   column_spec(4,"4cm")} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(methd)!=0) {cat("**Water Quality Data Steward Comments:**",params$mcom)}
 ```
@@ -158,8 +175,14 @@ In the analysis of metals, the dissolved fraction of the pollutant should be les
 dff<-params$diff
 colnames(dff)[2]<-"Char_Name"
 dff<-namefrac(dff)
-dff<-subset(dff,select=c(act_id.x,Char_Name,Result_Numeric,Result_Unit,diff,RPD))
-names(dff)<-c("Activty ID", "Pollutant", "Result","Unit", "Difference","RPD")
+dff<-subset(dff,select=c(act_id.x,Char_Name,Result, MRLValue,Result_Unit,diff,RPD))
+
+#convert, result numeric, difference and MRL to character to remove trailing zeroes
+dff$MRLValue<-as.character(dff$MRLValue)
+dff$diff<-as.character(dff$diff)
+
+#change names
+names(dff)<-c("Activty ID", "Pollutant", "Result","MRL","Unit", "Difference","RPD")
 
 if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE) %>%
   kable_styling(latex_options=c("HOLD_position","scale_down"))} else {cat("**NO KNOWN ISSUES**")}
