@@ -72,8 +72,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     new$disMDL<-dis$MDLValue[match(new$comb,dis$comb,nomatch=NA)]
     new$MDL<-ifelse(new$totMDL<new$disMDL,new$totMDL,new$disMDL)
     
-    #calculate the difference
-    new$diff<-new$total-new$dissolved
+    #calculate the difference, round to 3 figures
+    new$diff<-round(new$total-new$dissolved,3)
     
     #calculate the RPD
     new$RPD<-abs(new$diff)/((new$total+new$dissolved)/2)*100
@@ -85,7 +85,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
     cont<-merge(issues,y, by="comb")
     
-    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
+    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
                                 "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment"))
     }
     #create empty data frame to ensure code continues to run smoothly
