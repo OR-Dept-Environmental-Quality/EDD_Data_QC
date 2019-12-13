@@ -149,7 +149,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   estm<-function(x){
     x<-namefrac(x)
     
-    sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & (x$Result_Numeric>=x$MRLValue | x$Result_Numeric<=x$MDLValue),
+    sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & (x$Result_Numeric>x$MRLValue),
                   select=c(MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
                            CASNumber,Result,Result_Unit,Method_Code,Result_Comment,Result_Type,Result_status))
   }
