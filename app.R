@@ -22,7 +22,7 @@ options(scipen=999)
 #in case the shinybusy package needs to be installed/reinstalled
 #remotes::install_github("dreamRs/shinybusy")
 
-#Need to use NPDES data query I developed, cannot use AWQMS_Data as it pulls out too much data for the app to work,
+#Need to use NPDES data query I developed 
 source("W:/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
 #function for data validations
 source("Validation_Function.R")
