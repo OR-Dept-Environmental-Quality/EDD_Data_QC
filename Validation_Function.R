@@ -129,8 +129,11 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
                          x$CFR_Method)
     
     #no methods for tributyl phosphate, salinity, Demeton (8065-48-3), or inorganic arsenic in CFR 136
+    #inorganic arsenic is analyzed separately than total arsenic (which is what is specified in the CFR)
+    #Demeton(8065-48-3) is both O and S combined-it is different than Demeton-O or -S, which are specified in CFR
+    #1,3-dichloropropene is not in CFR, but it's components, cis- and trans-1,3-Dichloropropene are in CFR
     x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton","Arsenic, Inorganic",
-                                            "Dibromodichloromethane"),
+                                            "Dibromodichloromethane","1,3-Dichloropropene"),
                      paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
