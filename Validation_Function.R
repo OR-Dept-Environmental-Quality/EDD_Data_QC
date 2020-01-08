@@ -132,6 +132,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     #inorganic arsenic is analyzed separately than total arsenic (which is what is specified in the CFR)
     #Demeton(8065-48-3) is both O and S combined-it is different than Demeton-O or -S, which are specified in CFR
     #1,3-dichloropropene is not in CFR, but it's components, cis- and trans-1,3-Dichloropropene are in CFR
+    #dissolved organic carbon not in CFR, but total organic carbon is. Leave OC off of the "no CFR method" list, 
+    
     x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton","Arsenic, Inorganic",
                                             "Dibromodichloromethane","1,3-Dichloropropene"),
                      paste0("No CFR method for pollutant, check permit"),
@@ -139,6 +141,11 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     x$CFR_Method<-ifelse(is.na(x$CFR_Method),
                          paste0("No, check CFR 136"),
+                         x$CFR_Method)
+    
+    #special case for dissolved organic carbon, not a contaminant according to EPA, but TOC is on CFR list. 
+    x$CFR_Method<-ifelse(x$Char_Name %in% c("Organic carbon") & x$Sample_Fraction %in% c("Dissolved") & x$Method_Code %in% c("415.3"),
+                         paste0("Yes"),
                          x$CFR_Method)
     
     #return method results
@@ -171,4 +178,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2019-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)",reject=TRUE)
+#x<-NPDES_AWQMS_Qry(startdate = "2018-01-01", enddate = "2020-01-01" , org = "GP-WM(NOSTORETID)",reject=TRUE)
