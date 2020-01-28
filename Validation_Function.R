@@ -135,7 +135,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     #dissolved organic carbon not in CFR, but total organic carbon is. Leave OC off of the "no CFR method" list, 
     
     x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton","Arsenic, Inorganic",
-                                            "Dibromodichloromethane","1,3-Dichloropropene"),
+                                            "Dibromodichloromethane","1,3-Dichloropropene","1,2,4,5-Tetrachlorobenzene",
+                                            "o-Cresol","Pentachlorobenzene"),
                      paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
