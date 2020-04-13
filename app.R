@@ -13,6 +13,7 @@ library(openxlsx)
 library(shinybusy)
 library(rmarkdown)
 library(tidyverse)
+library(DT)
 
 
 
@@ -22,8 +23,7 @@ options(scipen=999)
 #in case the shinybusy package needs to be installed/reinstalled
 #remotes::install_github("dreamRs/shinybusy")
 
-#Need to use NPDES data query I developed 
-source("W:/R_Scripts/ShinyNPDES_AWQMS/NPDES_AWQMSQuery.R")
+
 #function for data validations
 source("Validation_Function.R")
 
@@ -155,7 +155,7 @@ server <- function(input, output) {
    rendd<-toString(sprintf("%s",input$endd))
    
    #actual query for data
-   dat<-NPDES_AWQMS_Qry(startdate=rstdt,enddate=rendd,org=c(input$orgs),project=c(input$proj),reject=TRUE)
+   dat<-AWQMS_Data(startdate=rstdt,enddate=rendd,org=c(input$orgs),project=c(input$proj))
    
    })
    
