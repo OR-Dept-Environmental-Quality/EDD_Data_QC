@@ -33,10 +33,11 @@ library(knitr)
 library(kableExtra)
 library(tinytex)
 
+
 ```
 
 ```{r logo, echo=FALSE,fig.align='left', out.width="400px",out.height="200px"}
-knitr::include_graphics("W:/R_Scripts/Split_Code/DEQ-logo-color-notransp-horiz750x156.png")
+knitr::include_graphics("E:/GitHub/EDD_Data_QC/DEQ-logo-color-notransp-horiz750x156.png")
 
 ```
 
