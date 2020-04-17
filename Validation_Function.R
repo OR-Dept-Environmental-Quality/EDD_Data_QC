@@ -128,8 +128,19 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
                          paste0("Out of Date (9/27/2017)"),
                          x$CFR_Method)
     
-    #no methods for tributyl phosphate, salinity, Demeton (8065-48-3), or inorganic arsenic in CFR 136
-    x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton","Arsenic, Inorganic"),
+    #no methods for tributyl phosphate, salinity, Demeton (8065-48-3), trivalent chromium, or inorganic arsenic in CFR 136
+    #also no method specified in CFR 136 for a number of purgeables
+    x$CFR_Method<-ifelse(x$Char_Name %in% c("Tributyl phosphate","Salinity","Demeton","Arsenic, Inorganic",
+                                            ".alpha.-Terpineol", "1,2,4,5-Tetrachlorobenzene","1-Methylnaphthalene",
+                                            "2,3,4,6-Tetrachlorophenol","2,3-Dichloroaniline","2,4,5-Trichlorophenol",
+                                            '2,6-Dichlorophenol','2-Methylnaphthalene','2-Naphthalenamine','Acetophenone',
+                                            'Aniline','Benzaldehyde','Benzoic acid','Benzyl alcohol','Biphenyl',
+                                            'Bis(2-chloroisopropyl) ether','Butyl 2-ethylhexyl phthalate',
+                                            'Caprolactam','Carbazole','Decane','Dibenzofuran','Dimethoate',
+                                            'Diphenylamine','Heptadecane','m,p-Cresol','m-Nitroaniline','N-Nitrosodiethylamine',
+                                            'N-Nitrosodi-n-butylamine','N-Nitrosopyrrolidine', 'o-Cresol',
+                                            'Octadecane','o-Nitroaniline','p-Chloroaniline','Pentachlorobenzene',
+                                            'p-Nitroaniline','Pyridine','Chromium(III)'),
                      paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
@@ -149,7 +160,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   estm<-function(x){
     x<-namefrac(x)
     
-    sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & (x$Result_Numeric>=x$MRLValue | x$Result_Numeric<=x$MDLValue),
+    sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & 
+                   (x$Result_Numeric>=x$MRLValue | (x$Result_Numeric<=x$MDLValue & x$Result_Operator=="<")),
                   select=c(MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
                            CASNumber,Result,Result_Unit,Method_Code,Result_Comment,Result_Type,Result_status))
   }
