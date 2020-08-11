@@ -47,15 +47,19 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
   #2. Dissolved vs Total/Total Recoverable
   dvst<-function(x){
-    y<-subset(x,x$Sample_Fraction %in% c("Total Recoverable","Dissolved","Total"))
+    y<-subset(x,x$Sample_Fraction %in% c("Total Recoverable","Dissolved","Total") & !(x$Char_Name %in% c("Organic carbon","Alkalinity, total")))
     
     #need to make this conditional, returns error if there are no analytes that have the right sample fractions
     if(nrow(y)!=0) {
-    #create new identifier out of activity id and characteristic name
-    y$comb<-paste0(y$act_id,",",y$Char_Name)
+    
+      #create new identifier out of date and characteristic name
+      #(used to use activity ID, but a lot of the labs have been using multiple activity IDs per batch 
+      #(e.g. unfilterd sample is xx-001A and filtered sample is xx-001B))
+      #use date and location since it is extremely rare for a permittee to be taking more than one sample a day at each location for metals data
+    y$comb<-paste0(y$SampleStartDate,",",y$MLocID,",",y$Char_Name)
     
     #get unique identifiers, put into new dataset
-    new<-unique(subset(y,select=c("act_id","Char_Name","comb")))
+    new<-unique(subset(y,select=c("act_id","SampleStartDate","MLocID","Char_Name","comb")))
     
     #select all dissolved
     dis<-subset(y,y$Sample_Fraction %in% "Dissolved")
@@ -85,9 +89,10 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
     cont<-merge(issues,y, by="comb")
     
-    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
-                                "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment"))
+    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate.x",
+                                "SampleStartTime","OrganizationID","MLocID.x","Project1","Result_status","Result_Comment"))
     }
+    
     #create empty data frame to ensure code continues to run smoothly
     
     else {final<-data.frame(matrix(ncol=16,nrow=0))
@@ -135,12 +140,12 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
                                             "2,3,4,6-Tetrachlorophenol","2,3-Dichloroaniline","2,4,5-Trichlorophenol",
                                             '2,6-Dichlorophenol','2-Methylnaphthalene','2-Naphthalenamine','Acetophenone',
                                             'Aniline','Benzaldehyde','Benzoic acid','Benzyl alcohol','Biphenyl',
-                                            'Bis(2-chloroisopropyl) ether','Butyl 2-ethylhexyl phthalate',
+                                            'Butyl 2-ethylhexyl phthalate','Methylmercury(1+)',
                                             'Caprolactam','Carbazole','Decane','Dibenzofuran','Dimethoate',
                                             'Diphenylamine','Heptadecane','m,p-Cresol','m-Nitroaniline','N-Nitrosodiethylamine',
                                             'N-Nitrosodi-n-butylamine','N-Nitrosopyrrolidine', 'o-Cresol',
                                             'Octadecane','o-Nitroaniline','p-Chloroaniline','Pentachlorobenzene',
-                                            'p-Nitroaniline','Pyridine','Chromium(III)'),
+                                            'p-Nitroaniline','Pyridine','Chromium(III)','Endrin ketone','1,2-Diphenylhydrazine'),
                      paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
@@ -178,4 +183,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-NPDES_AWQMS_Qry(startdate = "2019-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)",reject=TRUE)
+x<-AWQMS_Data(startdate = "2015-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)")
