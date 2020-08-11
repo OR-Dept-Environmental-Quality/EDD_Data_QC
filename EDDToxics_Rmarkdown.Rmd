@@ -61,7 +61,7 @@ knitr::include_graphics("E:/GitHub/EDD_Data_QC/DEQ-logo-color-notransp-horiz750x
 ## Sampling Information and Pollutants Analyzed
 Table 1 contains the sampling dates, project, location, and method of sample collection.  A "24 hr Composite" is a sample that was collected over the course of 24 hours. A "Composite" sample is a sample that is made up of six discreete grab samples. Please note that two consecutive days are likely one sampling event, as a 24 hour sample can be started on the same day as other samples and not end until the next day (Dates for 24 hr samples are always the end date of the sample).
 
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE, message= FALSE}
 #get unique date, project, station, and sampling method from data
 info<-unique(subset(params$data,select=c(SampleStartDate,Project1,StationDes,MLocID,SamplingMethod,act_id)))
 #order by sample start date
@@ -69,7 +69,7 @@ info<-info[order(info$SampleStartDate),]
 
 #summarize samplingmethod into one column
 grp<-info %>% group_by(SampleStartDate, MLocID) %>%
-  summarize(type=paste(sort(unique(SamplingMethod)),collapse=", "))
+  summarise(type=paste(sort(unique(SamplingMethod)),collapse=", "))
 
 #merge the grouped info into the data frame
 mer<-merge(info,grp, by=c("SampleStartDate","MLocID"))
@@ -77,7 +77,7 @@ mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type,
 
 #summarize activity IDs into one column
 actgrp<-info %>% group_by(SampleStartDate, MLocID) %>%
-  summarize(type=paste(sort(unique(act_id)),collapse=", "))
+  summarise(type=paste(sort(unique(act_id)),collapse=", "))
 
 #merge the grouped info into the data frame
 mer<-merge(mer,actgrp, by=c("SampleStartDate","MLocID"))
