@@ -89,8 +89,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
     cont<-merge(issues,y, by="comb")
     
-    final<-subset(cont,select=c("act_id.x","Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate.x",
-                                "SampleStartTime","OrganizationID","MLocID.x","Project1","Result_status","Result_Comment"))
+    final<-unique(subset(cont,select=c("Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate.x",
+                                "SampleStartTime","OrganizationID","MLocID.x","Project1","Result_status","Result_Comment")))
     }
     
     #create empty data frame to ensure code continues to run smoothly
@@ -183,4 +183,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-x<-AWQMS_Data(startdate = "2015-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)")
+#x<-AWQMS_Data(startdate = "2015-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)")
