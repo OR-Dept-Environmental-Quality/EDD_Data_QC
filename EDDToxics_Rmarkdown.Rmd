@@ -141,6 +141,15 @@ if(nrow(metals)>0){
 kable(metals,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Metals",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))}
 
+#pesticides and PCBs
+pest<-subset(chars,param_grp=="Pesticides",select=c(Char_Name,CASNumber,n))
+
+pest<-pest[order(pest$Char_Name),]
+
+if(nrow(pest)>0){
+kable(pest,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Pesticides and PCBs",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))}
+
 #Physical Chemistry
 phys<-subset(chars,param_grp=="Physical Chem",select=c(Char_Name,CASNumber,n))
 
@@ -148,6 +157,16 @@ phys<-phys[order(phys$Char_Name),]
 
 if(nrow(phys)>0){
 kable(phys,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Physical Chemistry",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
+}
+
+#stragglers
+strag<-subset(chars,param_grp=="",select=c(Char_Name,CASNumber,n))
+
+strag<-strag[order(strag$Char_Name),]
+
+if(nrow(strag)>0){
+kable(strag,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Physical Chemistry",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
 }
 
@@ -171,6 +190,9 @@ qlc<-subset(qlc,select=c("Char_Name","act_id","Result","MRLValue","MDLValue","MR
 #convert MDL to character to remove trailing zeroes
 qlc$MDLValue<-as.character(qlc$MDLValue)
 
+#convert QL to character to remove trailing zeroes
+qlc$QL<-as.character(qlc$QL)
+
 #rename columns
 names(qlc)<-c("Pollutant","Activity ID","Result","MRL","MDL","Unit","Established QL","Unit")
 
@@ -178,7 +200,8 @@ if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for wh
 
  if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))%>%
-                   column_spec(1,"5cm")} else{cat("**NO KNOWN ISSUES**")}
+                   column_spec(1,"5cm") %>%
+                   column_spec(7,"2cm")} else{cat("**NO KNOWN ISSUES**")}
 
 if(nrow(qlc)!=0) {cat("**Water Quality Data Steward Comments:**",params$qlcom)}
 
