@@ -221,7 +221,9 @@ methd<-methd %>%
        mutate(Method_Context=str_replace(Method_Context,"U.S. Environmental Protection Agency","US EPA")) %>%
        mutate(Method_Context=str_replace(Method_Context,"Georgia-Pacific Consumer Operations LLC",
                                          "Georgia-Pacific")) %>%
-       mutate(Method_Context=str_replace(Method_Context,"American Public Health Association","APHA"))
+       mutate(Method_Context=str_replace(Method_Context,"American Public Health Association","APHA")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"American Society for Testing of Materials","ASTM")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"City of St. Helens and Boise Cascade Timber Company","St.Helens STP"))
 
 #sort by pollutant
 methd<-methd[order(methd$Char_Name),]
