@@ -167,7 +167,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     x<-namefrac(x)
     
     sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & 
-                   (x$Result_Numeric>=x$MRLValue | (x$Result_Numeric<=x$MDLValue & x$Result_Operator=="<")),
+                   (x$Result_Numeric>=x$MRLValue | (x$Result_Numeric<=x$MDLValue & x$Result_Operator=="<") | (is.na(x$MDLValue) & is.na(x$MRLValue))),
                   select=c(MLocID,act_id,SampleStartDate,SampleStartTime,Char_Name,Char_Speciation,
                            CASNumber,Result,Result_Unit,Method_Code,Result_Comment,Result_Type,Result_status))
   }
@@ -183,4 +183,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-AWQMS_Data(startdate = "2015-05-01", enddate = "2019-07-17" , org = "GP-WM(NOSTORETID)")
+#x<-AWQMS_Data(startdate = "2015-05-01", enddate = "2019-07-17" , org = "SFPP_INC(NOSTORETID)")
