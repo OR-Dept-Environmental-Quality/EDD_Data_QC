@@ -246,7 +246,7 @@ In the analysis of metals, the dissolved fraction of the pollutant should be les
 dff<-params$diff
 colnames(dff)[1]<-"Char_Name"
 dff<-namefrac(dff)
-dff<-subset(dff,select=c(SampleStartDate.x,Char_Name,Result, MRLValue,Result_Unit,diff,RPD))
+dff<-subset(dff,select=c('SampleStartDate.x','Char_Name','Result', 'MRLValue','Result_Unit','diff','RPD'))
 
 #convert, result numeric, difference and MRL to character to remove trailing zeroes
 dff$MRLValue<-as.character(dff$MRLValue)
