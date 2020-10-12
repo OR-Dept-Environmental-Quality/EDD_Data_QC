@@ -35,7 +35,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #compare QL to MRL (got rid of unit mismatch code, was causing lot of problems and we've got the basic units covered)
     x$issue<-ifelse(
-      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"),
+      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"| (x$Result_Numeric==x$MRLValue & is.na(x$MDLValue))),
       "QL not met, Result below QL",
       NA)
     
@@ -95,9 +95,9 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #create empty data frame to ensure code continues to run smoothly
     
-    else {final<-data.frame(matrix(ncol=16,nrow=0))
-    names<-c("act_id.x","Char_Name.x","Sample_Fraction","Result_Numeric","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate",
-    "SampleStartTime","OrganizationID","MLocID","Project1","Result_status","Result_Comment")
+    else {final<-data.frame(matrix(ncol=15,nrow=0))
+    names<-c("Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate.x",
+    "SampleStartTime","OrganizationID","MLocID.x","Project1","Result_status","Result_Comment")
     colnames(final)<-names
     }
     
