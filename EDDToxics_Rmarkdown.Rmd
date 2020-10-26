@@ -147,7 +147,7 @@ pest<-subset(chars,param_grp=="Pesticides",select=c(Char_Name,CASNumber,n))
 pest<-pest[order(pest$Char_Name),]
 
 if(nrow(pest)>0){
-kable(pest,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Pesticides and PCBs",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+kable(pest,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Pesticides, PCBs, and other contaminants",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))}
 
 #Physical Chemistry
