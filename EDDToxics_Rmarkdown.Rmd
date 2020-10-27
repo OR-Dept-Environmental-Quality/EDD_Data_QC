@@ -255,8 +255,8 @@ dff$diff<-as.character(dff$diff)
 #change names
 names(dff)<-c("Sample Date","Pollutant", "Result","MRL","Unit", "Difference","RPD")
 
-if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE) %>%
-  kable_styling(latex_options=c("HOLD_position","striped","scale_down"))} else {cat("**NO KNOWN ISSUES**")}
+if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position","striped","scale_down","repeat_header"))} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(dff)!=0) {cat("**Water Quality Data Steward Comments:**",params$dfcom)}
 ```
