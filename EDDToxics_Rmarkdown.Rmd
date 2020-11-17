@@ -178,7 +178,7 @@ if(length(params$polc)!=0) {cat("**Water Quality Data Steward Comments:**",param
 **The data provided to DEQ was reviewed by the Water Quality Permit Data Steward. A summary of data review parameters and any issues noted are as follows:** 
 
 ## Quantitation Limits 
-A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2015 by DEQ LEAD. 
+A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2019 by DEQ WQ Permitting and Program Development. 
 
 ``` {r echo=FALSE, results='asis'}
 
