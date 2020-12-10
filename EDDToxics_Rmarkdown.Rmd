@@ -178,7 +178,7 @@ if(length(params$polc)!=0) {cat("**Water Quality Data Steward Comments:**",param
 **The data provided to DEQ was reviewed by the Water Quality Permit Data Steward. A summary of data review parameters and any issues noted are as follows:** 
 
 ## Quantitation Limits 
-A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QL requirements were adopted in 2007 for NPDES permits and updated in 2019 by DEQ WQ Permitting and Program Development. 
+A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QLs were adopted in 2007 for NPDES permits and updated in 2019 by DEQ WQ Permitting and Program Development. 
 
 ``` {r echo=FALSE, results='asis'}
 
@@ -196,7 +196,7 @@ qlc$QL<-as.character(qlc$QL)
 #rename columns
 names(qlc)<-c("Pollutant","Activity ID","Result","MRL","MDL","Unit","Established QL","Unit")
 
-if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for which the provided QLs are not sufficiently sensitive. This table uses the current established QLs from DEQ LEAD that were updated in 2015. In some cases, permitees have the option of providing matrix or sample specific QLs, please see the individual permit for any permittee-specific QLs. The MRL column is the value submitted by the lab as the lowest value the instrument can reliably measure. The MDL column is the value submitted by the lab as the lowest value that the instrument can detect an analyte.")}
+if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for which the provided MRLs do not meet the recommended QLs and thus may not be sufficiently sensitive. This table uses the current established QLs that were updated in 2019. The MRL column is the value submitted by the lab as the lowest value the instrument can reliably measure. The MDL column is the value submitted by the lab as the lowest value that the instrument can detect an analyte.")}
 
  if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))%>%
