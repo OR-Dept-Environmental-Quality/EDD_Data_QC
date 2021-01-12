@@ -247,17 +247,17 @@ In the analysis of metals, the dissolved fraction of the pollutant should be les
 dff<-params$diff
 colnames(dff)[1]<-"Char_Name"
 dff<-namefrac(dff)
-dff<-subset(dff,select=c('SampleStartDate.x','Char_Name','Result', 'MRLValue','Result_Unit','diff','RPD'))
+dff<-subset(dff,select=c('MLocID.x','SampleStartDate.x','Char_Name','Result', 'MRLValue','Result_Unit','diff','RPD'))
 
 #convert, result numeric, difference and MRL to character to remove trailing zeroes
 dff$MRLValue<-as.character(dff$MRLValue)
 dff$diff<-as.character(dff$diff)
 
 #change names
-names(dff)<-c("Sample Date","Pollutant", "Result","MRL","Unit", "Difference","RPD")
+names(dff)<-c("Location","Sample Date","Pollutant", "Result","MRL","Unit", "Difference","RPD")
 
 if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
-  kable_styling(latex_options=c("HOLD_position","striped","scale_down","repeat_header"))} else {cat("**NO KNOWN ISSUES**")}
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(dff)!=0) {cat("**Water Quality Data Steward Comments:**",params$dfcom)}
 ```
