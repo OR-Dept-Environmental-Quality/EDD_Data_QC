@@ -161,7 +161,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     return(sub)
   }
   
-  #estimated data (want to remove any rejected data (will be covered by rejected function), or J flag data)
+  #estimated data (want to remove any rejected data (will be covered by rejected function), or J flag data),
+  #but do want to keep data that is J flag but with a QC issue (result comment will be filled in)
   estm<-function(x){
     source("E:/GitHub/ShinyNPDES_AWQMS/NameandFraction.R")
     x<-namefrac(x)
