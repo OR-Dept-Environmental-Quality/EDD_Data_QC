@@ -93,6 +93,7 @@ kable(mer, format='latex',caption="Sampling Event Information",booktabs=TRUE,row
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header")) %>%
   column_spec(5,"3cm") %>%
   column_spec(3,"3cm") %>%
+  column_spec(2,"3cm") %>%
   column_spec(6,"3cm")
 ```
 The following tables contains lists of pollutants (subset by analyte type) analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
