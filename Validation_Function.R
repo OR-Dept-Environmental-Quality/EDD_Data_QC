@@ -145,7 +145,8 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
                                             'Diphenylamine','Heptadecane','m,p-Cresol','m-Nitroaniline','N-Nitrosodiethylamine',
                                             'N-Nitrosodi-n-butylamine','N-Nitrosopyrrolidine', 'o-Cresol',
                                             'Octadecane','o-Nitroaniline','p-Chloroaniline','Pentachlorobenzene',
-                                            'p-Nitroaniline','Pyridine','Chromium(III)','Endrin ketone','1,2-Diphenylhydrazine','Nitrogen'),
+                                            'p-Nitroaniline','Pyridine','Chromium(III)','Endrin ketone','1,2-Diphenylhydrazine','Nitrogen',
+                                            'Bromoethane'),
                      paste0("No CFR method for pollutant, check permit"),
                      x$CFR_Method)
     
