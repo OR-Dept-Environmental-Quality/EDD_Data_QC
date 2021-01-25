@@ -35,7 +35,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     
     #compare QL to MRL (got rid of unit mismatch code, was causing lot of problems and we've got the basic units covered)
     x$issue<-ifelse(
-      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"| (x$Result_Numeric==x$MRLValue & is.na(x$MDLValue))),
+      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"| (x$Result_Numeric==x$MRLValue & (is.na(x$MDLValue)|x$MRLValue==x$MDLValue))),
       "QL not met, Result below QL",
       NA)
     
