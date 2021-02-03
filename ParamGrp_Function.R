@@ -24,7 +24,8 @@ param_grp<-function(x){
             "Copper, Total Recoverable","Iron, Dissolved","Lead, Total Recoverable","Magnesium, Dissolved","Manganese, Dissolved",
             "Molybdenum, Dissolved","Nickel, Total Recoverable","Potassium, Dissolved", "Selenium, Total Recoverable",
             "Silver, Total Recoverable","Sodium, Dissolved","Thallium, Total Recoverable", "Vanadium, Total Recoverable",
-            "Zinc, Total Recoverable", "Mercury, Total Recoverable", "Cyanide, Total")
+            "Zinc, Total Recoverable", "Mercury, Total Recoverable", "Cyanide, Total","Chromium(III), Total Recoverable","Chromium(VI), Total Recoverable",
+            "Chromium(III), Dissolved","Chromium(VI), Dissolved","Arsenic, Inorganic, Dissolved","Arsenic, Inorganic, Total Recoverable")
   
   #volatile organic carbons
   voc<-c("1,1,1,2-Tetrachloroethane", "1,1,1-Trichloroethane", "1,1,2,2-Tetrachloroethane", "1,1,2-Trichloroethane", "1,1-Dichloroethane", 
@@ -59,7 +60,8 @@ param_grp<-function(x){
           "Oxidation reduction potential (ORP)", "pH","Temperature, water","Nitrate + Nitrite","Ammonium","Organic carbon, Total", 
           "Organic carbon, Dissolved","Chemical oxygen demand","Alkalinity, total","Ammonia","Total dissolved solids","Total suspended solids",
           "Total hardness","Hardness, Ca, Mg","Sulfate","Chloride","Silica", "Silica, Dissolved","Silica, Total Recoverable", 
-          "Biochemical oxygen demand, standard conditions","Tannin and Lignin", "Hardness, Ca, Mg, Total Recoverable", "Ammonia, Total")
+          "Biochemical oxygen demand, standard conditions","Tannin and Lignin", "Hardness, Ca, Mg, Total Recoverable", "Ammonia, Total",
+          "Hardness, Ca, Mg, Total")
   
   #pesticides, PCBs, and other contaminants
   pest<-c("N,N-Diethyl-m-toluamide","p,p'-DDT","Parathion","Chlordane","Lindane","Dieldrin","Endrin","Methoxychlor","p,p'-DDD","p,p'-DDE","Heptachlor",
