@@ -25,17 +25,19 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     #remove alkalinity, that needs to stay as mg/l
     names<-names[names !="Alkalinity, total"]
     
+    #do a join of qls and x based on Char_Name (need to combine metals and fractions)
+    x<-namefrac(x) 
+    
     x<-unit_conv(x,names,"mg/l","ug/l")
     x<-unit_conv(x,names,"ng/l","ug/l")
     
-    #do a join of qls and x based on Char_Name (need to combine metals and fractions)
-    x<-namefrac(x)
     
     x<-left_join(x,qls,by="Char_Name")
     
     #compare QL to MRL (got rid of unit mismatch code, was causing lot of problems and we've got the basic units covered)
     x$issue<-ifelse(
-      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"| (x$Result_Numeric==x$MRLValue & (is.na(x$MDLValue)|x$MRLValue==x$MDLValue))),
+      x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"| (x$Result_Numeric==x$MRLValue & (is.na(x$MDLValue)|x$MRLValue==x$MDLValue)) 
+                         |(x$Result_Numeric==x$MRLValue & is.na(x$MDLValue))),
       "QL not met, Result below QL",
       NA)
     
@@ -185,4 +187,4 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   
 
 
-#x<-AWQMS_Data(startdate = "2015-05-01", enddate = "2019-07-17" , org = "SFPP_INC(NOSTORETID)")
+#x<-AWQMS_Data(startdate = "2021-01-01", enddate = "2021-02-01" , org = "CITY_TROUTDALE(NOSTORETID)")
