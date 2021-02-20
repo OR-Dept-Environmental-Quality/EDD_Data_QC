@@ -162,12 +162,12 @@ kable(phys,format='latex',col.names=c("Pollutant","CAS Number","Observations"), 
 }
 
 #stragglers
-strag<-subset(chars,param_grp=="",select=c(Char_Name,CASNumber,n))
+strag<-subset(chars,is.na(param_grp),select=c(Char_Name,CASNumber,n))
 
 strag<-strag[order(strag$Char_Name),]
 
 if(nrow(strag)>0){
-kable(strag,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Physical Chemistry",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+kable(strag,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="No Category",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
 }
 
