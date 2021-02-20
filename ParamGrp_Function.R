@@ -39,13 +39,13 @@ param_grp<-function(x){
          "Methyl isobutyl ketone", "Methyl tert-butyl ether", "Methylene chloride", "m-Xylene", "Naphthalene", "n-Butylbenzene","trans-1,3-Dichloropropene",
          "n-Propylbenzene", "o-Chlorotoluene", "o-Dichlorobenzene", "o-Xylene", "p-Chlorotoluene", "p-Dichlorobenzene", "p-Xylene", 
          "sec-Butylbenzene","Styrene","Toluene","Trichloroethene (TCE)", "o-Xylene, mixt. with m-xylene and p-xylene","Xylene","m,p-Xylene",
-         "Tetrachloroethylene","Trichloroethylene")
+         "Tetrachloroethylene","Trichloroethylene","2-Chloroethyl vinyl ether")
   
   #semivolatiles
   semiv<-c("1,2,4,5-Tetrachlorobenzene", "1,2,4-Trichlorobenzene", "1-Methylphenanthrene", "1-Methylpyrene", "2,3,4,6-Tetrachlorophenol", 
            "2,3,5,6-Tetrachlorophenol", "2,4,5-Trichlorophenol", "2,4,6-Trichlorophenol", "2,4-Dichlorophenol", "2,4-Dimethylphenol", 
            "2,4-Dinitrophenol", "2,4-Dinitrotoluene", "2,6-Dichlorophenol", "2,6-Dinitrotoluene", "2-Chloronaphthalene", 
-           "3,3'-Dichlorobenzidine", "4,6-Dichloro-o-cresol", "Acenaphthene", "Acenaphthylene", "Anthracene", "Azobenzene", "Benz[a]anthracene", 
+           "3,3'-Dichlorobenzidine", "4,6-Dichloro-o-cresol", "Acenaphthene", "Acenaphthylene","Acrolein", "Anthracene", "Azobenzene", "Benz[a]anthracene", 
            "Benzidine", "Benzo(b)fluoranthene", "Benzo[a]pyrene", "Benzo[ghi]perylene", "Benzo[k]fluoranthene", "Bis(2-chloroethoxy)methane", 
            "Bis(2-chloroethyl) ether", "Bis(2-chloroisopropyl) ether", "Butyl benzyl phthalate", "Chrysene", "Di(2-ethylhexyl) adipate", 
            "Di(2-ethylhexyl) phthalate", "Dibenz[a,h]anthracene", "Dibenzofuran", "Dibutyl phthalate", "Diethyl phthalate", "Dimethyl phthalate",
@@ -53,22 +53,26 @@ param_grp<-function(x){
            "Hexachloroethane", "Indeno[1,2,3-cd]pyrene", "Isophorone", "m-Dichlorobenzene", "Naphthalene",'o-Chlorophenol' ,"o-Cresol",
            "o-Nitrophenol" ,'4,6-Dinitro-o-cresol' , 'BDE-003' ,'p-Chloro-m-cresol','p-Chlorophenyl phenyl ether','p-Nitrophenol' ,
            'Bis(2-chloro-1-methylethyl) ether','Nitrobenzene' ,'N-Nitrosodi-n-propylamine','N-Nitrosodiphenylamine',
-           'Pentachlorophenol' ,'Phenanthrene' ,'Phenol' ,'Pyrene')
+           'Pentachlorophenol' ,'Phenanthrene' ,'Phenol' ,'Pyrene',"1,2-Diphenylhydrazine",'N-Nitrosodimethylamine',"Pentachlorobenzene",
+           '2-Methylnaphthalene','Benzyl alcohol','Carbazole','m-Nitroaniline','o-Nitroaniline','p-Chloroaniline','p-Nitroaniline',"Pyridine","m,p-Cresol"
+           
+  )
   
   #physical chemistry parameters (a little bit of a grab bag)
   phys<-c("Conductivity",	"Depth, bottom","Depth, from ground surface to well water level","Dissolved oxygen (DO)",
           "Oxidation reduction potential (ORP)", "pH","Temperature, water","Nitrate + Nitrite","Ammonium","Organic carbon, Total", 
           "Organic carbon, Dissolved","Chemical oxygen demand","Alkalinity, total","Ammonia","Total dissolved solids","Total suspended solids",
-          "Total hardness","Hardness, Ca, Mg","Sulfate","Chloride","Silica", "Silica, Dissolved","Silica, Total Recoverable", 
+          "Total hardness","Hardness, Ca, Mg","Sulfate","Chloride","Silica", "Silica, Dissolved","Silica, Total Recoverable", "Sulfide",
           "Biochemical oxygen demand, standard conditions","Tannin and Lignin", "Hardness, Ca, Mg, Total Recoverable", "Ammonia, Total",
-          "Hardness, Ca, Mg, Total")
+          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus")
   
   #pesticides, PCBs, and other contaminants
   pest<-c("N,N-Diethyl-m-toluamide","p,p'-DDT","Parathion","Chlordane","Lindane","Dieldrin","Endrin","Methoxychlor","p,p'-DDD","p,p'-DDE","Heptachlor",
           "Azinphos-methyl","Malathion","Aldrin",".alpha.-Hexachlorocyclohexane",".beta.-Hexachlorocyclohexane",
           "Benzene Hexachloride, Beta (BHC)","1,2,3,4,5,6-Hexachlorocyclohexane",".alpha.-Endosulfan","Heptachlor epoxide",
           "Endosulfan sulfate","Mirex","Chlorpyrifos","Endrin aldehyde","Toxaphene","Demeton","Aroclor 1260","Aroclor 1254",
-          "Aroclor 1221","Aroclor 1232","Aroclor 1248","Aroclor 1016",".beta.-Endosulfan","Aroclor 1242","Total PCBs","N-Nitrosodiethylamine")
+          "Aroclor 1221","Aroclor 1232","Aroclor 1248","Aroclor 1016",".beta.-Endosulfan","Aroclor 1242","Total PCBs","N-Nitrosodiethylamine","Silvex",
+          "Picloram","Dinoseb","Dicamba","Dalapon","2,4-D")
   
   #create group column in dataframe
   x$param_grp<-case_when(x$Char_Name %in% metals ~"Metals",
