@@ -88,7 +88,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     new$RPD<-round(new$RPD,2)
     
     #if difference is negative, and if it is larger than the MDL, then it is an issue
-    issues<-subset(new,new$diff<0 & abs(new$diff)>new$MDL)
+    issues<-subset(new,(new$diff<0 & abs(new$diff)>new$MDL)|(new$diff<0 & is.na(new$MDL)))
     cont<-merge(issues,y, by="comb")
     
     final<-unique(subset(cont,select=c("Char_Name.x","Sample_Fraction","Result","MRLValue","MDLValue","Result_Unit","diff","RPD","SampleStartDate.x",
