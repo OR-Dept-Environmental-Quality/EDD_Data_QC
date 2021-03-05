@@ -25,7 +25,7 @@ param_grp<-function(x){
             "Molybdenum, Dissolved","Nickel, Total Recoverable","Potassium, Dissolved", "Selenium, Total Recoverable",
             "Silver, Total Recoverable","Sodium, Dissolved","Thallium, Total Recoverable", "Vanadium, Total Recoverable",
             "Zinc, Total Recoverable", "Mercury, Total Recoverable", "Cyanide, Total","Chromium(III), Total Recoverable","Chromium(VI), Total Recoverable",
-            "Chromium(III), Dissolved","Chromium(VI), Dissolved","Arsenic, Inorganic, Dissolved","Arsenic, Inorganic, Total Recoverable")
+            "Chromium(III), Dissolved","Chromium(VI), Dissolved","Arsenic, Inorganic, Dissolved","Arsenic, Inorganic, Total Recoverable","Weak, dissociable cyanide")
   
   #volatile organic carbons
   voc<-c("1,1,1,2-Tetrachloroethane", "1,1,1-Trichloroethane", "1,1,2,2-Tetrachloroethane", "1,1,2-Trichloroethane", "1,1-Dichloroethane", 
@@ -64,7 +64,7 @@ param_grp<-function(x){
           "Organic carbon, Dissolved","Chemical oxygen demand","Alkalinity, total","Ammonia","Total dissolved solids","Total suspended solids",
           "Total hardness","Hardness, Ca, Mg","Sulfate","Chloride","Silica", "Silica, Dissolved","Silica, Total Recoverable", "Sulfide",
           "Biochemical oxygen demand, standard conditions","Tannin and Lignin", "Hardness, Ca, Mg, Total Recoverable", "Ammonia, Total",
-          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus")
+          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus", "Phosphorus")
   
   #pesticides, PCBs, and other contaminants
   pest<-c("N,N-Diethyl-m-toluamide","p,p'-DDT","Parathion","Chlordane","Lindane","Dieldrin","Endrin","Methoxychlor","p,p'-DDD","p,p'-DDE","Heptachlor",
