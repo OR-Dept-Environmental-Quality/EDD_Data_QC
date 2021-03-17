@@ -14,6 +14,7 @@ library(shinybusy)
 library(rmarkdown)
 library(tidyverse)
 library(DT)
+library(lubridate)
 
 
 
@@ -269,9 +270,22 @@ output$downloadData <- downloadHandler(
 
     })
 
+#variables to use in Rmarkdown pdf filename
+pmonth<-eventReactive(input$goButton,{
+   month.abb[month(data()$SampleStartDate)]
+})
+
+pyear<-eventReactive(input$goButton,{
+   year(data()$SampleStartDate)
+})
+
+ptype<-eventReactive(input$goButton,{
+   ifelse(project=="Copper BLM","CuBLM","Toxics")
+})
+
 #R markdown report
 output$report<-downloadHandler(
-  filename = function() {paste(input$permittee,"_", Sys.Date() ,"_EDDToxics_Report.pdf", sep="")},
+  filename = function() {paste(input$permittee,"_",pmonth(),pyear(),ptype(),"_EDDReport.pdf", sep="")},
   content=function(file){
     
     #create a file in a temporary directory
