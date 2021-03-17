@@ -64,7 +64,7 @@ param_grp<-function(x){
           "Organic carbon, Dissolved","Chemical oxygen demand","Alkalinity, total","Ammonia","Total dissolved solids","Total suspended solids",
           "Total hardness","Hardness, Ca, Mg","Sulfate","Chloride","Silica", "Silica, Dissolved","Silica, Total Recoverable", "Sulfide",
           "Biochemical oxygen demand, standard conditions","Tannin and Lignin", "Hardness, Ca, Mg, Total Recoverable", "Ammonia, Total",
-          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus", "Phosphorus")
+          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus", "Phosphorus","Hardness, Ca, Mg, Dissolved")
   
   #pesticides, PCBs, and other contaminants
   pest<-c("N,N-Diethyl-m-toluamide","p,p'-DDT","Parathion","Chlordane","Lindane","Dieldrin","Endrin","Methoxychlor","p,p'-DDD","p,p'-DDE","Heptachlor",
