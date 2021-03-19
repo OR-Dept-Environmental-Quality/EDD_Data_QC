@@ -74,7 +74,7 @@ ui <- fluidPage(
         dateInput("startd",
                   label = "Select Start Date",
                   min = '1949-09-15',
-                  value = Sys.Date()-182),
+                  value = Sys.Date()-60),
         
         # End date
         dateInput("endd",
@@ -280,7 +280,7 @@ pyear<-eventReactive(input$goButton,{
 })
 
 ptype<-eventReactive(input$goButton,{
-   ifelse(project=="Copper BLM","CuBLM","Toxics")
+   ifelse(unique(data()$Project1)=="Copper BLM","CuBLM","Toxics")
 })
 
 #R markdown report
