@@ -10,7 +10,8 @@ param_grp<-function(x){
   
   #need to add all total and dissolved cases to metals that result from namefrac, or else they won't show up
   metals<-c("Cyanide","Cyanides amenable to chlorination (HCN & CN)","Aluminum","Iron","Lead","Mercury","Nickel","Silver","Thallium","Antimony","Arsenic","Arsenic, Inorganic",
-            "Beryllium","Cadmium","Chromium","Copper","Zinc","Selenium","Chromium(III)","Chromium(VI)","Arsenic ion (3+)","Calcium","Cobalt",
+            "Beryllium","Cadmium","Chromium","Copper","Zinc","Selenium","Chromium(III)","Chromium(VI)","Arsenic ion (3+)","Arsenic ion (3+), Dissolved","Arsenic ion (3+), Total Recoverable",
+            "Arsenic ion (5+)","Arsenic ion (5+), Total Recoverable","Arsenic ion (5+), Dissolved","Calcium","Cobalt",
             "Lithium","Beryllium","Manganese","Magnesium","Molybdenum","Potassium","Sodium","Uranium","Vanadium","Barium","Boron",
             "Aluminum, Dissolved","Aluminum, Total Recoverable","Antimony, Dissolved", "Arsenic, Dissolved","Barium, Dissolved",
             "Beryllium, Dissolved","Boron, Dissolved","Boron, Total Recoverable","Cadmium, Dissolved","Calcium, Total Recoverable",
@@ -39,7 +40,7 @@ param_grp<-function(x){
          "Methyl isobutyl ketone", "Methyl tert-butyl ether", "Methylene chloride", "m-Xylene", "Naphthalene", "n-Butylbenzene","trans-1,3-Dichloropropene",
          "n-Propylbenzene", "o-Chlorotoluene", "o-Dichlorobenzene", "o-Xylene", "p-Chlorotoluene", "p-Dichlorobenzene", "p-Xylene", 
          "sec-Butylbenzene","Styrene","Toluene","Trichloroethene (TCE)", "o-Xylene, mixt. with m-xylene and p-xylene","Xylene","m,p-Xylene",
-         "Tetrachloroethylene","Trichloroethylene","2-Chloroethyl vinyl ether")
+         "Tetrachloroethylene","Trichloroethylene","2-Chloroethyl vinyl ether","Bromoethane")
   
   #semivolatiles
   semiv<-c("1,2,4,5-Tetrachlorobenzene", "1,2,4-Trichlorobenzene", "1-Methylphenanthrene", "1-Methylpyrene", "2,3,4,6-Tetrachlorophenol", 
@@ -64,7 +65,8 @@ param_grp<-function(x){
           "Organic carbon, Dissolved","Chemical oxygen demand","Alkalinity, total","Ammonia","Total dissolved solids","Total suspended solids",
           "Total hardness","Hardness, Ca, Mg","Sulfate","Chloride","Silica", "Silica, Dissolved","Silica, Total Recoverable", "Sulfide",
           "Biochemical oxygen demand, standard conditions","Tannin and Lignin", "Hardness, Ca, Mg, Total Recoverable", "Ammonia, Total",
-          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus", "Phosphorus","Hardness, Ca, Mg, Dissolved")
+          "Hardness, Ca, Mg, Total","Hydrogen sulfide","Phosphate-phosphorus", "Phosphorus","Hardness, Ca, Mg, Dissolved","Alkalinity, bicarbonate",
+          "Alkalinity, carbonate","Alkalinity, Hydroxide")
   
   #pesticides, PCBs, and other contaminants
   pest<-c("N,N-Diethyl-m-toluamide","p,p'-DDT","Parathion","Chlordane","Lindane","Dieldrin","Endrin","Methoxychlor","p,p'-DDD","p,p'-DDE","Heptachlor",
