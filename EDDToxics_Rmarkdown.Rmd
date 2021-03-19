@@ -62,7 +62,7 @@ knitr::include_graphics("E:/GitHub/EDD_Data_QC/DEQ-logo-color-notransp-horiz750x
 ***              
 
 ## Sampling Information and Pollutants Analyzed
-Table 1 contains the sampling dates, project, location, and method of sample collection.  A "24 hr Composite" is a sample that was collected over the course of 24 hours. A "Composite" sample is a sample that is made up of six discreete grab samples. Please note that two consecutive days are likely one sampling event, as a 24 hour sample can be started on the same day as other samples and not end until the next day (Dates for 24 hr samples are always the end date of the sample).
+Table 1 contains the sampling dates, project, location, and method of sample collection.  A "24 hr Composite" is a sample that was collected over the course of 24 hours. A "Composite" sample is a sample that is made up of six discrete grab samples. Please note that two consecutive days are likely one sampling event, as a 24 hour sample can be started on the same day as other samples and not end until the next day (Dates for 24 hr samples are always the end date of the sample).
 
 ```{r echo=FALSE, warning=FALSE, message= FALSE}
 #get unique date, project, station, and sampling method from data
