@@ -35,10 +35,11 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
     x<-left_join(x,qls,by="Char_Name")
     
     #compare QL to MRL (got rid of unit mismatch code, was causing lot of problems and we've got the basic units covered)
+    #note: if result is a non detect (i.e. "<") and the DL is less than the QL, this is also considered to be sufficiently sensitive
     x$issue<-ifelse(
       x$MRLValue>x$QL & (x$Result_Numeric<x$MRLValue | x$Result=="ND"| (x$Result_Numeric==x$MRLValue & (is.na(x$MDLValue)|x$MRLValue==x$MDLValue)) 
-                         |(x$Result_Numeric==x$MRLValue & is.na(x$MDLValue))),
-      "QL not met, Result below QL",
+                         |(x$Result_Numeric==x$MRLValue & is.na(x$MDLValue))) & !(x$MDLValue<x$QL & x$Result_Operator=="<"),
+      "QL not met",
       NA)
     
     return(subset(x,!(is.na(issue)),

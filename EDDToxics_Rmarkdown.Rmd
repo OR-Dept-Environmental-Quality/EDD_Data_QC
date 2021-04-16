@@ -197,7 +197,7 @@ qlc$QL<-as.character(qlc$QL)
 #rename columns
 names(qlc)<-c("Pollutant","Activity ID","Result","MRL","MDL","Unit","Established QL","Unit")
 
-if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for which the provided MRLs do not meet the recommended QLs and thus may not be sufficiently sensitive. This table uses the current established QLs that were updated in 2020. The MRL column is the value submitted by the lab as the lowest value the instrument can reliably measure. The MDL column is the value submitted by the lab as the lowest value that the instrument can detect an analyte.")}
+if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for which the provided MRLs do not meet the recommended QLs and thus may not be sufficiently sensitive. This table uses the current established QLs that were updated in 2020. The MRL column is the value submitted by the lab as the lowest value the instrument can reliably measure. The MDL column is the value submitted by the lab as the lowest value that the instrument can detect an analyte. Note that any non-detect results where the MDL is below the established QL are considered sufficiently sensitive and will not be shown in this table.")}
 
  if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
   kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))%>%
