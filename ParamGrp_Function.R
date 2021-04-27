@@ -73,7 +73,8 @@ param_grp<-function(x){
           "Azinphos-methyl","Malathion","Aldrin",".alpha.-Hexachlorocyclohexane",".beta.-Hexachlorocyclohexane",
           "Benzene Hexachloride, Beta (BHC)","1,2,3,4,5,6-Hexachlorocyclohexane",".alpha.-Endosulfan","Heptachlor epoxide",
           "Endosulfan sulfate","Mirex","Chlorpyrifos","Endrin aldehyde","Toxaphene","Demeton","Aroclor 1260","Aroclor 1254",
-          "Aroclor 1221","Aroclor 1232","Aroclor 1248","Aroclor 1016",".beta.-Endosulfan","Aroclor 1242","Total PCBs","N-Nitrosodiethylamine","Silvex",
+          "Aroclor 1221","Aroclor 1232","Aroclor 1248","Aroclor 1016",".beta.-Endosulfan","Aroclor 1242","Total PCBs","N-Nitrosodiethylamine",
+          "N-Nitrosodi-n-butylamine","N-Nitrosopyrrolidine","Silvex",
           "Picloram","Dinoseb","Dicamba","Dalapon","2,4-D",".delta.-Hexachlorocyclohexane")
   
   #create group column in dataframe
