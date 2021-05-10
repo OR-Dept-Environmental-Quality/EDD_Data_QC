@@ -55,7 +55,8 @@ param_grp<-function(x){
            "o-Nitrophenol" ,'4,6-Dinitro-o-cresol' , 'BDE-003' ,'p-Chloro-m-cresol','p-Chlorophenyl phenyl ether','p-Nitrophenol' ,
            'Bis(2-chloro-1-methylethyl) ether','Nitrobenzene' ,'N-Nitrosodi-n-propylamine','N-Nitrosodiphenylamine',
            'Pentachlorophenol' ,'Phenanthrene' ,'Phenol' ,'Pyrene',"1,2-Diphenylhydrazine",'N-Nitrosodimethylamine',"Pentachlorobenzene",
-           '2-Methylnaphthalene','Benzyl alcohol','Carbazole','m-Nitroaniline','o-Nitroaniline','p-Chloroaniline','p-Nitroaniline',"Pyridine","m,p-Cresol"
+           '2-Methylnaphthalene','Benzyl alcohol','Carbazole','m-Nitroaniline','o-Nitroaniline','p-Chloroaniline','p-Nitroaniline',"Pyridine","m,p-Cresol",
+           "Butyl 2-ethylhexyl phthalate"
            
   )
   
