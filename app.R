@@ -93,6 +93,11 @@ ui <- fluidPage(
                       choices=project,
                       multiple=TRUE),
        
+       #add checkbox if a report is reissued
+       checkboxInput("reissue",
+                     label="Is this a reissued report?",
+                     value=FALSE),
+       
        #add action button, idea is to not run query until the button is clicked)
        actionButton("goButton","Run Query"),
        #add an excel download button
@@ -283,9 +288,15 @@ ptype<-eventReactive(input$goButton,{
    ifelse(unique(data()$Project1)=="Copper BLM","CuBLM","Toxics")
 })
 
+#variable that let's us know if the report is reissued or not
+reis<-eventReactive(input$goButton,{
+   reis<-ifelse(input$reissue==TRUE,"yes","no")
+   reis
+})
+
 #R markdown report
 output$report<-downloadHandler(
-  filename = function() {paste(input$permittee,"_",pmonth(),pyear(),ptype(),"_EDDReport.pdf", sep="")},
+  filename = function() {paste(input$permittee,"_",pmonth(),pyear(),ptype(),ifelse(reis()=="yes","REISSUED",""),"_EDDReport.pdf", sep="")},
   content=function(file){
     
     #create a file in a temporary directory
@@ -310,7 +321,8 @@ output$report<-downloadHandler(
                  rejcom=input$comm4,
                  estcom=input$comm5,
                  polc=input$pollcom,
-                 permnum=input$permittee)
+                 permnum=input$permittee,
+                 reis=reis())
       
     rmarkdown::render(tempReport, output_file=file,
                       params=params,
