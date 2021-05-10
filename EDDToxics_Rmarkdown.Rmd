@@ -15,6 +15,7 @@ params:
   estcom: NA
   permnum: NA
   polc: NA
+  reis: NA
 output: pdf_document
 header-includes:
   \PassOptionsToPackage{dvipsnames,table}{xcolor}
@@ -44,7 +45,7 @@ knitr::include_graphics("E:/GitHub/EDD_Data_QC/DEQ-logo-color-notransp-horiz750x
 
 ```
 
-# `r paste("EDD Toxics Report for: ",params$org)` 
+## `r if(params$reis=="yes"){paste("REISSUED EDD Toxics Report for : ",params$org)} else {paste("EDD Toxics Report for: ",params$org)}` 
 ## `r paste("Permit Number: ",params$permnum)`
 ## `r paste("Number of Sampling Events: ",params$num)`
 ## `r paste("Report Date:", Sys.Date())` 
@@ -258,7 +259,8 @@ dff$diff<-as.character(dff$diff)
 names(dff)<-c("Location","Sample Date","Pollutant", "Result","MRL","Unit", "Difference","RPD")
 
 if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
-  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))} else {cat("**NO KNOWN ISSUES**")}
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))%>%
+    column_spec(3,"4cm")} else {cat("**NO KNOWN ISSUES**")}
 
 if(nrow(dff)!=0) {cat("**Water Quality Data Steward Comments:**",params$dfcom)}
 ```
