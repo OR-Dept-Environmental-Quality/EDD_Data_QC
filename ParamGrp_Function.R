@@ -37,7 +37,7 @@ param_grp<-function(x){
          "Chloroform", "Chloromethane", "cis-1,3-Dichloropropene", "Cumene", "Dichlorobromomethane", "CFC-12",
          "Dibromomethane", "Ethylbenzene", "p-Cymene","tert-Butylbenzene","Vinyl chloride","Tribromomethane","Tetrachloroethene",
          "Ethylene dibromide","CFC-11", "Halon 1011", "Hexachlorobutadiene", "m-Dichlorobenzene", "Methyl bromide", "Methyl ethyl ketone", 
-         "Methyl isobutyl ketone", "Methyl tert-butyl ether", "Methylene chloride", "m-Xylene", "Naphthalene", "n-Butylbenzene","trans-1,3-Dichloropropene",
+         "Methyl isobutyl ketone", "Methyl tert-butyl ether", "Methylene chloride", "m-Xylene", "Naphthalene", "n-Butylbenzene","1,3-Dichloropropene","trans-1,3-Dichloropropene",
          "n-Propylbenzene", "o-Chlorotoluene", "o-Dichlorobenzene", "o-Xylene", "p-Chlorotoluene", "p-Dichlorobenzene", "p-Xylene", 
          "sec-Butylbenzene","Styrene","Toluene","Trichloroethene (TCE)", "o-Xylene, mixt. with m-xylene and p-xylene","Xylene","m,p-Xylene",
          "Tetrachloroethylene","Trichloroethylene","2-Chloroethyl vinyl ether","Bromoethane")
