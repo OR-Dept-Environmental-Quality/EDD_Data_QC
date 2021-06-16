@@ -50,13 +50,13 @@ knitr::include_graphics("E:/GitHub/EDD_Data_QC/DEQ-logo-color-notransp-horiz750x
 ## `r paste("Number of Sampling Events: ",params$num)`
 ## `r paste("Report Date:", Sys.Date())` 
 
-**Aliana Britson**
+**Victoria Avalos**
 
 **Water Quality Permit Data Steward**
 
 **Laboratory & Environmental Assessment Division**
 
-**7202 NE Evergren Parkway Suite 150**
+**7202 NE Evergreen Parkway Suite 150**
 
 **Hillsboro, OR 97124**
 
@@ -232,6 +232,7 @@ methd<-methd %>%
 methd<-methd[order(methd$Char_Name),]
 
 names(methd)<-c("Pollutant","Method","Agency","Method Status")
+
 if(nrow(methd)!=0) {kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE, longtable=TRUE) %>%
                    kable_styling(latex_options=c("HOLD_position","striped","repeat_header")) %>%
                    column_spec(1,"4cm")%>%
