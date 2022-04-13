@@ -1,0 +1,297 @@
+---
+params:
+  org: NA
+  num: NA
+  qls: NA
+  methods: NA
+  diff: NA
+  reject: NA
+  estimate: NA
+  data: NA
+  qlcom: NA
+  mcom: NA
+  dfcom: NA
+  rejcom: NA
+  estcom: NA
+  permnum: NA
+  polc: NA
+  reis: NA
+output: pdf_document
+header-includes:
+  \PassOptionsToPackage{dvipsnames,table}{xcolor}
+  \usepackage{colortbl}
+  \usepackage{booktabs}
+  \usepackage{float}
+  \usepackage{longtable}
+  \usepackage{array}
+  \usepackage{multirow}
+  \let\oldrule=\rule
+  \renewcommand{\rule}[1]{\oldrule{\linewidth}}
+---
+```{r setup-packages-functions, include=FALSE}
+library(knitr)
+
+#including kableExtra seems to mess with booktabs and float latex packages, so compile fails on second pdf. 
+#included packages in YAML header to fix problem
+library(kableExtra)
+library(tinytex)
+source("//deqlab1/VAVALOS/EDD_Data_QC-master/ParamGrp_Function.R")
+
+
+```
+
+```{r logo, echo=FALSE,fig.align='left', out.width="400px",out.height="200px"}
+knitr::include_graphics("E:/EDD_Data_QC-master/DEQ-logo-color-notransp-horiz750x156.png")
+
+```
+
+## `r if(params$reis=="yes"){paste("REISSUED EDD Toxics Report for : ",params$org)} else {paste("EDD Toxics Report for: ",params$org)}` 
+## `r paste("Permit Number: ",params$permnum)`
+## `r paste("Number of Sampling Events: ",params$num)`
+## `r paste("Report Date:", Sys.Date())` 
+
+**Victoria Avalos**
+
+**Water Quality Permit Data Steward**
+
+**Laboratory & Environmental Assessment Division**
+
+**7202 NE Evergreen Parkway Suite 150**
+
+**Hillsboro, OR 97124**
+
+***              
+
+## Sampling Information and Pollutants Analyzed
+Table 1 contains the sampling dates, project, location, and method of sample collection.  A "24 hr Composite" is a sample that was collected over the course of 24 hours. A "Composite" sample is a sample that is made up of six discrete grab samples. Please note that two consecutive days are likely one sampling event, as a 24 hour sample can be started on the same day as other samples and not end until the next day (Dates for 24 hr samples are always the end date of the sample).
+
+```{r echo=FALSE, warning=FALSE, message= FALSE}
+#get unique date, project, station, and sampling method from data
+info<-unique(subset(params$data,select=c(SampleStartDate,Project1,StationDes,MLocID,SamplingMethod,act_id)))
+#order by sample start date
+info<-info[order(info$SampleStartDate),]
+
+#summarize samplingmethod into one column
+grp<-info %>% group_by(SampleStartDate, MLocID) %>%
+  summarise(type=paste(sort(unique(SamplingMethod)),collapse=", "))
+
+#merge the grouped info into the data frame
+mer<-merge(info,grp, by=c("SampleStartDate","MLocID"))
+mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type,act_id)))
+
+#summarize activity IDs into one column
+actgrp<-info %>% group_by(SampleStartDate, MLocID) %>%
+  summarise(type=paste(sort(unique(act_id)),collapse=", "))
+
+#merge the grouped info into the data frame
+mer<-merge(mer,actgrp, by=c("SampleStartDate","MLocID"))
+mer<-unique(subset(mer,select=c(SampleStartDate,Project1,StationDes,MLocID,type.x,type.y)))
+  
+#fix the names
+names(mer)<-c("Sample Date","Project","Station Description","Location ID","Sample Collection Method(s)","Activity ID(s)")
+
+kable(mer, format='latex',caption="Sampling Event Information",booktabs=TRUE,row.names = FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header")) %>%
+  column_spec(5,"2cm") %>%
+  column_spec(3,"3cm") %>%
+  column_spec(2,"2cm") %>%
+  column_spec(6,"3cm")
+```
+The following tables contains lists of pollutants (subset by analyte type) analyzed and submitted by the permittee. Please see individual permit for list of required polluants and the monitoring schedule. 
+
+``` {r echo=FALSE, results='asis'}
+#get the unique names of the pollutants
+dat<-namefrac(params$data)
+chars<-count(dat, Char_Name, CASNumber)
+#sort them alphabetially
+chars<-chars[order(chars$Char_Name),]
+
+#names(chars)<-c("Pollutant","CAS Number","Observations")
+
+#will likely need to split into a few tables, a list is overwhelming if permittee does full suite of volatiles and semi-volatiles
+chars<-param_grp(chars)
+
+#kable(chars, format='latex', caption="List of Analyzed Pollutants", booktabs=TRUE,longtable=TRUE) %>%
+#kable_styling(latex_options=c("HOLD_position","repeat_header"))
+
+#VOCs
+voc<-subset(chars,param_grp=="VOCs",select=c(Char_Name,CASNumber,n))
+#order by analyte
+voc<-voc[order(voc$Char_Name),]
+  
+if(nrow(voc)>0){
+kable(voc,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Volatile Organic Carbon",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
+}
+
+#Semivolatiles
+semivol<-subset(chars,param_grp=="Semivolatiles",select=c(Char_Name,CASNumber,n))
+
+semivol<-semivol[order(semivol$Char_Name),]
+
+if(nrow(semivol)>0){
+kable(semivol,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Semivolatile Organic Carbons",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
+}
+
+#Metals 
+metals<-subset(chars,param_grp=="Metals",select=c(Char_Name,CASNumber,n))
+
+metals<-metals[order(metals$Char_Name),]
+
+if(nrow(metals)>0){
+kable(metals,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Metals",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))}
+
+#pesticides and PCBs
+pest<-subset(chars,param_grp=="Pesticides",select=c(Char_Name,CASNumber,n))
+
+pest<-pest[order(pest$Char_Name),]
+
+if(nrow(pest)>0){
+kable(pest,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Pesticides, PCBs, and other contaminants",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))}
+
+#Physical Chemistry
+phys<-subset(chars,param_grp=="Physical Chem",select=c(Char_Name,CASNumber,n))
+
+phys<-phys[order(phys$Char_Name),]
+
+if(nrow(phys)>0){
+kable(phys,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="Physical Chemistry",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
+}
+
+#stragglers
+strag<-subset(chars,is.na(param_grp),select=c(Char_Name,CASNumber,n))
+
+strag<-strag[order(strag$Char_Name),]
+
+if(nrow(strag)>0){
+kable(strag,format='latex',col.names=c("Pollutant","CAS Number","Observations"), caption="No Category",booktabs=TRUE,row.names=FALSE,longtable=TRUE)%>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))
+}
+
+if(length(params$polc)!=0) {cat("**Water Quality Data Steward Comments:**",params$polc)}
+```
+
+&nbsp;
+
+**The data provided to DEQ was reviewed by the Water Quality Permit Data Steward. A summary of data review parameters and any issues noted are as follows:** 
+
+## Quantitation Limits 
+A quantitation limit (QL) is the lowest amount of a pollutant that can be reliably measured. Permittees are required to use the most sensitive analytical test method, as specified in 40 CFR 122.44(i)(1)(iv). Established QLs were adopted in 2007 for NPDES permits and updated in 2020 by DEQ WQ Permitting and Program Development. 
+
+``` {r echo=FALSE, results='asis'}
+
+
+
+qlc<-params$qls
+qlc<-subset(qlc,select=c("Char_Name","act_id","Result_Text","MRLValue","MDLValue","MRLUnit","QL","QL_Unit"))
+
+#convert MDL to character to remove trailing zeroes
+qlc$MDLValue<-as.character(qlc$MDLValue)
+
+#convert QL to character to remove trailing zeroes
+qlc$QL<-as.character(qlc$QL)
+
+#rename columns
+names(qlc)<-c("Pollutant","Activity ID","Result","MRL","MDL","Unit","Established QL","Unit")
+
+if (nrow(qlc)!=0) {cat("The following table includes a list of pollutants for which the provided MRLs do not meet the recommended QLs and thus may not be sufficiently sensitive. This table uses the current established QLs that were updated in 2020. The MRL column is the value submitted by the lab as the lowest value the instrument can reliably measure. The MDL column is the value submitted by the lab as the lowest value that the instrument can detect an analyte. Note that any non-detect results where the MDL is below the established QL are considered sufficiently sensitive and will not be shown in this table.")}
+
+ if(nrow(qlc)!=0) {kable(qlc, format='latex', caption="Insufficient Quantitation Limits",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))%>%
+                   column_spec(1,"5cm") %>%
+                   column_spec(7,"2cm")} else{cat("**NO KNOWN ISSUES**")}
+
+if(nrow(qlc)!=0) {cat("**Water Quality Data Steward Comments:**",params$qlcom)}
+
+```
+
+
+
+## Methods 
+ Permittees are required to use methods approved under 40 CFR 136. There are some pollutants that have no approved methods under 40 CFR 136. In some cases, permittees may obtain approval to perform different methods for specific pollutants through EPA. These instances are permittee-specific and should be contained within the permit. Please see the individual permit. &nbsp;
+
+
+``` {r echo=FALSE, results='asis'}
+methd<-params$methods
+
+#shorten the long agency names
+methd<-methd %>%
+       mutate(Method_Context=str_replace(Method_Context,"U.S. Environmental Protection Agency","US EPA")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"Georgia-Pacific Consumer Operations LLC",
+                                         "Georgia-Pacific")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"American Public Health Association","APHA")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"American Society for Testing of Materials","ASTM")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"City of St. Helens and Boise Cascade Timber Company","St.Helens STP")) %>%
+       mutate(Method_Context=str_replace(Method_Context,"City of Portland Bureau of Environmental Services","City of Portland BES"))
+
+#sort by pollutant
+methd<-methd[order(methd$Char_Name),]
+
+names(methd)<-c("Pollutant","Method","Agency","Method Status")
+if(nrow(methd)!=0) {kable(methd, format='latex', caption="Pollutants analyzed using non-CFR methods",booktabs=TRUE, row.names=FALSE, longtable=TRUE) %>%
+                   kable_styling(latex_options=c("HOLD_position","striped","repeat_header")) %>%
+                   column_spec(1,"4cm")%>%
+                   column_spec(4,"4cm")} else {cat("**NO KNOWN ISSUES**")}
+
+if(nrow(methd)!=0) {cat("**Water Quality Data Steward Comments:**",params$mcom)}
+```
+
+
+## Total Recoverable vs Dissolved
+In the analysis of metals, the dissolved fraction of the pollutant should be less than the total recoverable fraction of the pollutant. However, there are some cases where sample contamination from an outside source or method uncertainty causes the dissolved fraction to be larger than the total recoverable fraction. &nbsp;
+
+``` {r echo=FALSE,results='asis'}
+
+dff<-params$diff
+colnames(dff)[1]<-"Char_Name"
+dff<-namefrac(dff)
+dff<-subset(dff,select=c('MLocID.x','SampleStartDate.x','Char_Name','Result_Text', 'MRLValue','Result_Unit','diff','RPD'))
+
+#convert, result numeric, difference and MRL to character to remove trailing zeroes
+dff$MRLValue<-as.character(dff$MRLValue)
+dff$diff<-as.character(dff$diff)
+
+#change names
+names(dff)<-c("Location","Sample Date","Pollutant", "Result","MRL","Unit", "Difference","RPD")
+
+if(nrow(dff)!=0) {kable(dff, format='latex', caption="Metals with dissolved fraction larger than total recoverable fraction", booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+  kable_styling(latex_options=c("HOLD_position","striped","repeat_header"))%>%
+    column_spec(3,"4cm")} else {cat("**NO KNOWN ISSUES**")}
+
+if(nrow(dff)!=0) {cat("**Water Quality Data Steward Comments:**",params$dfcom)}
+```
+
+## Estimated Data
+Data may be estimated for a variety of reasons including issues with quality control, sampling, hold time, and/or storage that causes the data to be biased high or low. This table does not include "J flag" data, ie results that fall between the method detection limit and quantitation limit, as this data is routinely estimated and does not reflect any potential bias in the result. Estimated data may still be usable for permitting purposes, but must be used with caution. &nbsp;
+
+``` {r echo=FALSE, results='asis'}
+est<-params$estimate
+est<-subset(est,select=c(act_id,Char_Name,Result_Text,Result_Unit,Result_Comment))
+names(est)<-c("Activity ID","Pollutant","Result","Unit","Comment")
+if(nrow(est)!=0) {kable(est,format='latex', caption="Estimated Data (not including J flag data)",booktabs=TRUE, row.names=FALSE,
+                        longtable=TRUE) %>%
+                  kable_styling(latex_options=c("HOLD_position","striped","repeat_header")) %>%
+                  column_spec(5,"7cm")%>%
+                  column_spec(2,"3.5cm")} else {cat("**NO KNOWN ISSUES**")}
+
+if(nrow(est)!=0) {cat("**Water Quality Data Steward Comments:**", params$estcom)}
+
+```
+
+## Rejected Data
+In some cases, data does not pass quality control analysis. This data may still be usable for permitting purposes, but must be used with caution.  &nbsp;
+
+``` {r echo=FALSE, results='asis'}
+rej<-params$reject
+rej<-subset(rej,select=c(act_id, Char_Name, Result_Text, Result_Unit, Result_Comment))
+names(rej)<-c("Activity ID","Pollutant","Result","Unit","Comment")
+if(nrow(rej)!=0) {kable(rej,format='latex', caption="Rejected Data",booktabs=TRUE, row.names=FALSE,longtable=TRUE) %>%
+                  kable_styling(latex_options=c("HOLD_position","striped","repeat_header")) %>%
+    column_spec(2,"4cm")%>%              
+    column_spec(5,"8cm")} else {cat("**NO KNOWN ISSUES**")}
+
+if(nrow(rej)!=0) {cat("**Water Quality Data Steward Comments:**", params$rejcom)}
