@@ -35,13 +35,13 @@ library(knitr)
 #included packages in YAML header to fix problem
 library(kableExtra)
 library(tinytex)
-source("//deqlab1/VAVALOS/EDD_Data_QC-master/ParamGrp_Function.R")
+source("//deqlab1/VAVALOS/EDD_Data_QC-master/EDD_data_QC/ParamGrp_Function.R")
 
 
 ```
 
 ```{r logo, echo=FALSE,fig.align='left', out.width="400px",out.height="200px"}
-knitr::include_graphics("E:/EDD_Data_QC-master/DEQ-logo-color-notransp-horiz750x156.png")
+knitr::include_graphics("E:/EDD_Data_QC-master/EDD_data_QC/DEQ-logo-color-notransp-horiz750x156.png")
 
 ```
 
