@@ -13,7 +13,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   ql<-function(x){
     require(openxlsx)
     require(dplyr)
-    source("E:/ShinyNPDES_AWQMS-master/NameandFraction.R")
+    source("NameandFraction.R")
 
     #read in table with QLs
     qls<-read.xlsx("2_21_19_QLs.xlsx",colNames=TRUE,na.string="NA")
@@ -177,7 +177,7 @@ as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
   #estimated data (want to remove any rejected data (will be covered by rejected function), or J flag data),
   #but do want to keep data that is J flag but with a QC issue (result comment will be filled in)
   estm<-function(x){
-    source("E:/ShinyNPDES_AWQMS-master/NameandFraction.R")
+    source("NameandFraction.R")
     x<-namefrac(x)
     
     sub<- subset(x,x$Result_Type=="Estimated" & x$Result_status!="Rejected" & 
