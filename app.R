@@ -2,6 +2,8 @@
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 ######This app is meant to help QC data submitted under EDD toxics by NPDES permittees
+#Happening
+#devtools::install_github("TravisPritchardODEQ/AWQMSdata",dependencies = TRUE, force = TRUE, upgrade = FALSE)
 
 print("Initial data queries may take a few minutes.")
 
@@ -42,8 +44,8 @@ organization <- AWQMS_Orgs()
 organization <- organization$OrganizationID
 organization <- sort(organization)
 
-project<-AWQMS_Projects()
-project<-sort(project$Project)
+project <- AWQMSdata::AWQMS_Projects()
+project <- sort(project$Project)
 
 save(organization, project, file = 'query_cache.RData')
 } else {
@@ -160,13 +162,13 @@ server <- function(input, output) {
    rendd<-toString(sprintf("%s",input$endd))
    
    #actual query for data
-   dat<-AWQMS_Data(startdate=rstdt,enddate=rendd,org=c(input$orgs),project=c(input$proj))
+   dat<-AWQMS_Data(startdate=rstdt,enddate=rendd,OrganizationID=c(input$orgs),project=c(input$proj))
    
    })
    
    #take data, make a subtable for VIEWING in the shiny app so it only shows desired columns from the AWQMS pull in desired order
    tsub<-eventReactive(input$goButton,{
-     tsub<-select(data(),Org_Name,Project1,StationDes,MLocID,MonLocType,SampleStartDate,SampleMedia,
+     tsub<-select(data(),OrganizationID,Project1,StationDes,MLocID,MonLocType,SampleStartDate,SampleMedia,
                SampleSubmedia,Activity_Type,Statistical_Base,Char_Name,Char_Speciation,
                Sample_Fraction,CASNumber,Result_Text,Result_Unit,Analytical_method,
                Activity_Comment,Result_Comment,Result_status,Result_Type)
@@ -175,7 +177,7 @@ server <- function(input, output) {
    
    #take data, make a subtable for DOWNLOAD so that we only show the desired columns from the AWQMS data pull and in the desired order
    dsub<-eventReactive(input$goButton,{
-     dsub<-select(data(),OrganizationID,Org_Name,Project1,act_id,StationDes,MLocID,MonLocType,SampleStartDate,SampleStartTime,SampleMedia,
+     dsub<-select(data(),OrganizationID,Project1,act_id,StationDes,MLocID,MonLocType,SampleStartDate,SampleStartTime,SampleMedia,
                  SampleSubmedia,Activity_Type,Statistical_Base,Time_Basis,Char_Name,Char_Speciation,
                  Sample_Fraction,CASNumber,Result_Text,Result_Unit,Analytical_method,Method_Code,Method_Context,Analytical_Lab,
                  MDLType,MDLValue,MDLUnit,MRLType,MRLValue,MRLUnit,
@@ -306,7 +308,7 @@ output$report<-downloadHandler(
     
     #create list of characteristics
     #set up parameters to pass to our Rmd document
-    params<-list(org=unique(data()$Org_Name),
+    params<-list(OrganizationID=unique(data()$OrganizationID),
                  num=input$data_sub,
                  qls=qlchk(),
                  methods=metchk(),
