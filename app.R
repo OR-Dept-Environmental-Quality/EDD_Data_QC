@@ -17,6 +17,10 @@ library(tidyverse)
 library(DT)
 library(lubridate)
 
+#set the working directory to be the folder where this script is currently located
+library(here)
+here <- here()
+setwd(here)
 
 
 #attempt to turn off scientific notation

@@ -1,6 +1,6 @@
 ---
 params:
-  org: NA
+  OrganizationID: NA
   num: NA
   qls: NA
   methods: NA
@@ -29,9 +29,14 @@ header-includes:
   \renewcommand{\rule}[1]{\oldrule{\linewidth}}
 ---
 ```{r setup-packages-functions, include=FALSE}
-setwd("C:/Users/cthomas/Documents/local_R_resources/scripts/EDD_Data_QC")
+
 
 library(knitr)
+
+#set the working directory to be the folder where this script is currently located
+library(here)
+here <- here()
+setwd(here)
 
 #including kableExtra seems to mess with booktabs and float latex packages, so compile fails on second pdf. 
 #included packages in YAML header to fix problem
@@ -43,8 +48,9 @@ source("ParamGrp_Function.R")
 ```
 
 ```{r logo, echo=FALSE,fig.align='left', out.width="400px",out.height="200px"}
-
-knitr::include_graphics("C:/Users/cthomas/Documents/local_R_resources/scripts/EDD_Data_QC/DEQ-logo-color-notransp-horiz750x156.png")
+here <- here()
+DEQ_logo_path <- file.path(here, "DEQ-logo-color-notransp-horiz750x156.png")
+knitr::include_graphics(DEQ_logo_path)
 
 ```
 
