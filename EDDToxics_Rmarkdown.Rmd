@@ -43,6 +43,7 @@ setwd(here)
 library(kableExtra)
 library(tinytex)
 source("ParamGrp_Function.R")
+source("NameandFraction.R")
 
 
 ```
