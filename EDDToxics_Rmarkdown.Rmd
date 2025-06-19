@@ -60,7 +60,7 @@ knitr::include_graphics(DEQ_logo_path)
 ## `r paste("Number of Sampling Events: ",params$num)`
 ## `r paste("Report Date:", Sys.Date())` 
 
-**Kayla Nowlin**
+**Carter Thomas**
 
 **Water Quality Permit Data Steward**
 
