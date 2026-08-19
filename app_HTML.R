@@ -108,7 +108,7 @@ ui <- fluidPage(
        #add an excel download button
        downloadButton('downloadData', 'Download Data'),
        #add Report download button
-       downloadButton('report','Download PDF Report')
+       downloadButton('report','Download HTML Report')
         ),
 
 
