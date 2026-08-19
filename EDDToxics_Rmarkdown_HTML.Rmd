@@ -48,7 +48,7 @@ source("NameandFraction.R")
 
 ```
 
-```{r logo, echo=FALSE,fig.align='left', out.width="400px",out.height="200px"}
+```{r logo, echo=FALSE,fig.align='left', out.width="600px",out.height="200px"}
 here <- here()
 DEQ_logo_path <- file.path(here, "DEQ-logo-color-notransp-horiz750x156.png")
 knitr::include_graphics(DEQ_logo_path)
